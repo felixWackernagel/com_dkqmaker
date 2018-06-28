@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fieldset>
+        <field
+                name="id"
+                type="hidden"/>
+        <field
+                name="quiz_id"
+                type="sql"
+                default=""
+                label="COM_DKQMAKER_QUESTION_QUIZ_ID_LABEL"
+                description="COM_DKQMAKER_QUESTION_QUIZ_ID_DESCRIPTION"
+                required="true"
+                query="SELECT id, number FROM #__quizzes"
+                key_field="id"
+                value_field="number"
+                header="COM_DKQMAKER_QUESTION_QUIZ_ID_SELECTOR"
+                class="required validate-numeric"/>
+        <field
+                name="number"
+                type="number"
+                default=""
+                label="COM_DKQMAKER_QUESTION_NUMBER_LABEL"
+                description="COM_DKQMAKER_QUESTION_NUMBER_DESCRIPTION"
+                min="1"
+                max="60"
+                step="1"
+                required="true"/>
+        <field
+                name="question"
+                type="textarea"
+                label="COM_DKQMAKER_QUESTION_QUESTION_LABEL"
+                description="COM_DKQMAKER_QUESTION_QUESTION_DESCRIPTION"
+                required="true"
+                class="inputbox"
+                default=""/>
+        <field
+                name="answer"
+                type="text"
+                label="COM_DKQMAKER_QUESTION_ANSWER_LABEL"
+                description="COM_DKQMAKER_QUESTION_ANSWER_DESCRIPTION"
+                required="true"
+                size="40"
+                class="inputbox"
+                default=""/>
+        <field
+                name="version"
+                type="number"
+                label="COM_DKQMAKER_QUESTION_VERSION_LABEL"
+                description="COM_DKQMAKER_QUESTION_VERSION_DESCRIPTION"
+                size="40"
+                class="inputbox"
+                default=""
+                readonly="true"/>
+        <field
+                name="last_update"
+                type="calendar"
+                label="COM_DKQMAKER_QUESTION_LAST_UPDATE_LABEL"
+                description="COM_DKQMAKER_QUESTION_LAST_UPDATE_DESCRIPTION"
+                class="input-medium"
+                required="false"
+                filter="user_utc"
+                format="%Y-%m-%d %H:%M:%S"
+                singleheader="true"
+                translateformat="true"
+                showtime="true"
+                timeformat="24"
+                readonly="true"/>
+    </fieldset>
+</form>

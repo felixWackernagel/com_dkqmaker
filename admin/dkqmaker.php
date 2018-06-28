@@ -1,0 +1,18 @@
+<?php
+// No direct access to this file
+defined('_JEXEC') or die('Restricted access');
+ 
+// import joomla controller library
+jimport('joomla.application.component.controller');
+ 
+$controller = JControllerLegacy::getInstance('DKQMaker');
+
+// Perform the Request task
+$input = JFactory::getApplication()->input;
+$cmd = $input->getCmd('task');
+$controller->execute( $cmd );
+ 
+// Redirect if set by the controller
+$controller->redirect();
+
+?>
