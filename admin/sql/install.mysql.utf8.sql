@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `#__quizzes` (
   `version` INT(10) unsigned NOT NULL DEFAULT 1,
   `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `number_UNIQUE` (`number` ASC)
+  UNIQUE INDEX `number_UNIQUE` (`number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
 
 DROP TABLE IF EXISTS `#__questions`;
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `#__questions` (
   `published` tinyint(4) NOT NULL DEFAULT 0,
   `version` INT(10) unsigned NOT NULL DEFAULT 1,
   `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
-  UNIQUE INDEX `number_UNIQUE` (`number` ASC),
+  UNIQUE INDEX `number_UNIQUE` (`number`),
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_quiz`
   FOREIGN KEY (`id`)
