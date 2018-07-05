@@ -4,15 +4,16 @@ defined('_JEXEC') or die('Restricted access');
  
 // import Joomla controllerform library
 jimport('joomla.application.component.controllerform');
- 
-/**
- * HelloWorld Controller
- */
+
 class DKQMakerControllerQuiz extends JControllerForm
 {
         public function save($key = null, $urlVar = null)
         {
             $return = parent::save($key, $urlVar);
+            if( $this->getTask() == 'save2new' )
+            {
+                return $return;
+            }
             $this->setRedirect(JRoute::_('index.php?option=com_dkqmaker&view=quizzes'));
             return $return;
         }

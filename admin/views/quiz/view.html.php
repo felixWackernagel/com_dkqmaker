@@ -45,6 +45,7 @@ class DKQMakerViewQuiz extends JViewLegacy
                 JToolBarHelper::title($isNew ? JText::_('COM_DKQMAKER_QUIZ_HEADER_NEW')
                                              : JText::_('COM_DKQMAKER_QUIZ_HEADER_EDIT'));
                 JToolBarHelper::save('quiz.save');
+                JToolBarHelper::save2new('quiz.save2new');
                 JToolBarHelper::cancel('quiz.cancel', $isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE');
         }
 }
