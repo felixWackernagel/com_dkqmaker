@@ -14,7 +14,7 @@ $base=substr($base,0,strlen($base)-strlen("administrator/"));
             <?php echo $item->id; ?>
         </td>
         <td>
-            <a href="<?php echo $base . 'index.php?option=com_dkqmaker&view=quiz&id=' . $item->id; ?>"><?php echo $item->number; ?></a>
+            <?php echo $item->number; ?>
         </td>
         <td>
             <?php echo $item->location; ?>
@@ -42,6 +42,9 @@ $base=substr($base,0,strlen($base)-strlen("administrator/"));
         </td>
         <td>
             <?php echo $item->last_update; ?>
+        </td>
+        <td>
+            <a href="<?php echo $base . 'index.php?option=com_dkqmaker&view=quiz&quiz=' . $item->number; ?>">API</a>
         </td>
     </tr>
 <?php endforeach; ?>
