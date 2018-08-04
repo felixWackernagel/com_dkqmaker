@@ -11,7 +11,7 @@ class DKQMakerModelQuizzes extends JModelList
          */
         protected function getListQuery()
         {
-                // Create a new query object.           
+                // Create a new query object.
                 $db = JFactory::getDBO();
                 $query = $db->getQuery(true);
                 // Select some fields from the table
@@ -53,7 +53,7 @@ class DKQMakerModelQuizzes extends JModelList
         }
 
         protected function populateState($ordering = null, $direction = null) {
-            parent::populateState('number', 'ASC');
+           parent::populateState('number', 'ASC');
         }
 
         /* END TABLE SORTING */

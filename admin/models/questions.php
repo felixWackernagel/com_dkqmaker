@@ -4,55 +4,80 @@ defined('_JEXEC') or die('Restricted access');
 
 class DKQMakerModelQuestions extends JModelList
 {
-        /* START TABLE SORTING */
-        /* https://docs.joomla.org/Adding_sortable_columns_to_a_table_in_a_component */
+    public function __construct($config = array())
+    {
+        // searchable fields
+        if( empty( $config['filter_fields'] ) ) {
+            $config['filter_fields'] = array(
+                'id', 'q.id',
+                'quiz_id', 'q.quiz_id',
+                'question', 'q.question',
+                'answer', 'q.answer',
+                'number', 'q.number',
+                'published', 'q.published',
+                'version', 'q.version',
+                'last_update', 'q.last_update'
+            );
+        }
+        parent::__construct($config);
+    }
 
-        public function __construct($config = array())
+    /**
+     * Method to auto-populate the model state.
+     *
+     * Note. Calling getState in this method will result in recursion.
+     *
+     * @param   string  $ordering   An optional ordering field.
+     * @param   string  $direction  An optional direction (asc|desc).
+     *
+     * @return    void
+     *
+     * @since    3.1
+     */
+    protected function populateState($ordering = 'quiz_number', $direction = 'ASC') {
+        $search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+        $this->setState('filter.search', $search);
+
+        parent::populateState( $ordering, $direction );
+    }
+
+    /* END TABLE SORTING */
+
+    /**
+     * Method to build an SQL query to load the list data.
+     *
+     * @return      string  An SQL query
+     */
+    protected function getListQuery()
+    {
+        // Create a new query
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query
+            ->select('q.id, u.number as quiz_number, q.number, q.question, q.answer, q.published, q.version, q.last_update')
+            ->from('#__questions as q')
+            ->leftJoin('#__quizzes as u ON u.id=q.quiz_id' );
+
+        // Filter by search
+        $search = $this->getState('filter.search');
+        if (!empty($search))
         {
-            if( empty( $config['filter_fields'] ) ) {
-                $config['filter_fields'] = array(
-                    'q.id',
-                    'q.quiz_id',
-                    'q.question',
-                    'q.answer',
-                    'q.number',
-                    'q.published',
-                    'q.version',
-                    'q.last_update'
-                );
+            if (stripos($search, 'id:') === 0)
+            {
+                $query->where('q.id = ' . (int) substr($search, 3));
             }
-            parent::__construct($config);
+            else
+            {
+                $search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
+                $query->where('(q.question LIKE ' . $search . ' OR q.answer LIKE ' . $search . ')');
+            }
         }
 
-        protected function populateState($ordering = null, $direction = null) {
-            parent::populateState('number', 'ASC');
-        }
+        // sorting
+        $orderColumn = $this->getState('list.ordering', 'quiz_number');
+        $orderDirection = $this->getState('list.direction', 'ASC');
+        $query->order($db->escape($orderColumn) . ' ' . $db->escape($orderDirection));
 
-        /* END TABLE SORTING */
-
-        /**
-         * Method to build an SQL query to load the list data.
-         *
-         * @return      string  An SQL query
-         */
-        protected function getListQuery()
-        {
-                // Create a new query object.           
-                $db = JFactory::getDBO();
-                $query = $db->getQuery(true);
-                // Select some fields from the table
-                $query
-                    ->select('q.id, u.number as quiz_number, q.number, q.question, q.answer, q.published, q.version, q.last_update')
-                    ->from('#__questions as q')
-                    ->leftJoin('#__quizzes as u ON u.id=q.quiz_id' );
-
-                // START TABLE SORTING
-                $orderCol = $this->state->get('list.ordering', 'number');
-                $orderDir = $this->state->get('list.direction', 'ASC');
-                $query
-                    ->order($db->escape($orderCol) . ' ' . $db->escape($orderDir));
-                // END TABLE SORTING
-
-                return $query;
-        }
+        return $query;
+    }
 }
