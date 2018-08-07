@@ -11,6 +11,10 @@ JHtml::_('formbehavior.chosen', 'select');
 </div>
 <div id="j-main-container" class="span10">
     <form action="index.php?option=com_dkqmaker&view=quizzes" method="post" name="adminForm" id="adminForm">
+        <?php
+        // Search tools bar
+        echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+        ?>
         <table class="table table-striped table-hover" id="quizList">
             <thead><?php echo $this->loadTemplate('head'); ?></thead>
             <tbody><?php echo $this->loadTemplate('body'); ?></tbody>

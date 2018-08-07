@@ -9,24 +9,25 @@ class DKQMakerViewQuizzes extends JViewLegacy
 {
     function display($tpl = null)
     {
-        // Get data from the model
-        $items = $this->get('Items');
-        $pagination = $this->get('Pagination');
-        $state = $this->get('State');
+        // Get data from the model and assign data to the view
+        $this->items         = $this->get('Items');
+        $this->pagination    = $this->get('Pagination');
+        $state               = $this->get('State');
+        $this->state         = $state;
+
+        // Table Filter
+        $this->filterForm    = $this->get('FilterForm');
+        $this->activeFilters = $this->get('ActiveFilters');
+
+        // Table Sorting
+        $this->sortDirection = $state->get('list.direction');
+        $this->sortColumn    = $state->get('list.ordering');
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
             JError::raiseError(500, implode('<br />', $errors));
             return false;
         }
-        // Assign data to the view
-        $this->items = $items;
-        $this->pagination = $pagination;
-
-        // Start Table Sorting
-        $this->sortDirection = $state->get('list.direction');
-        $this->sortColumn = $state->get('list.ordering');
-        // End Table Sorting
 
         // Display the template
         $this->addSubmenu('quizzes');

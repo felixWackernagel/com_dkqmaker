@@ -4,8 +4,8 @@
         <field
                 name="search"
                 type="text"
-                label="COM_DKQMAKER_QUESTIONS_SEARCH_LABEL"
-                description="COM_DKQMAKER_QUESTIONS_SEARCH_DESCRIPTION"
+                label="COM_DKQMAKER_QUIZZES_SEARCH_LABEL"
+                description="COM_DKQMAKER_QUIZZES_SEARCH_DESCRIPTION"
                 hint="JSEARCH_FILTER"
         />
     </fields>

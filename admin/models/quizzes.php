@@ -4,57 +4,81 @@ defined('_JEXEC') or die('Restricted access');
 
 class DKQMakerModelQuizzes extends JModelList
 {
-        /**
-         * Method to build an SQL query to load the list data.
-         *
-         * @return      string  An SQL query
-         */
-        protected function getListQuery()
-        {
-                // Create a new query object.
-                $db = JFactory::getDBO();
-                $query = $db->getQuery(true);
-                // Select some fields from the table
-                $query
-                    ->select('id, number, location, address, quiz_date, quiz_master, latitude, longitude, published, version, last_update')
-                    ->from('#__quizzes');
-
-                // START TABLE SORTING
-                $orderCol = $this->state->get('list.ordering', 'number');
-                $orderDir = $this->state->get('list.direction', 'DESC');
-                $query
-                    ->order($db->escape($orderCol) . ' ' . $db->escape($orderDir));
-                // END TABLE SORTING
- 
-                return $query;
+    public function __construct($config = array())
+    {
+        // searchable fields
+        if( empty( $config['filter_fields'] ) ) {
+            $config['filter_fields'] = array(
+                'id',
+                'number',
+                'location',
+                'address',
+                'quiz_date',
+                'quiz_master',
+                'latitude',
+                'longitude',
+                'published',
+                'version',
+                'last_update'
+            );
         }
+        parent::__construct($config);
+    }
 
-        /* START TABLE SORTING */
-        /* https://docs.joomla.org/Adding_sortable_columns_to_a_table_in_a_component */
+    /**
+     * Method to auto-populate the model state.
+     *
+     * Note. Calling getState in this method will result in recursion.
+     *
+     * @param   string  $ordering   An optional ordering field.
+     * @param   string  $direction  An optional direction (asc|desc).
+     *
+     * @return    void
+     *
+     * @since    3.1
+     */
+    protected function populateState($ordering = 'number', $direction = 'ASC') {
+        $search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
+        $this->setState('filter.search', $search);
 
-        public function __construct($config = array())
+        parent::populateState($ordering, $direction);
+    }
+
+    /**
+     * Method to build an SQL query to load the list data.
+     *
+     * @return      string  An SQL query
+     */
+    protected function getListQuery()
+    {
+        // Create a new query object.
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query
+            ->select('id, number, location, address, quiz_date, quiz_master, latitude, longitude, published, version, last_update')
+            ->from('#__quizzes');
+
+        // Filter by search
+        $search = $this->getState('filter.search');
+        if (!empty($search))
         {
-            if( empty( $config['filter_fields'] ) ) {
-                $config['filter_fields'] = array(
-                    'id',
-                    'number',
-                    'location',
-                    'address',
-                    'quiz_date',
-                    'quiz_master',
-                    'latitude',
-                    'longitude',
-                    'published',
-                    'version',
-                    'last_update'
-                );
+            // search inside id when search term starts with id:
+            if (stripos($search, 'id:') === 0)
+            {
+                $query->where('id = ' . (int) substr($search, 3));
             }
-            parent::__construct($config);
+            else
+            {
+                $search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
+                $query->where('(location LIKE ' . $search . ' OR number LIKE ' . $search . ' OR address LIKE ' . $search . ' OR quiz_date LIKE ' . $search . ' OR quiz_master LIKE ' . $search . ' OR latitude LIKE ' . $search . ' OR longitude LIKE ' . $search . ')');
+            }
         }
 
-        protected function populateState($ordering = null, $direction = null) {
-           parent::populateState('number', 'ASC');
-        }
+        // sorting
+        $orderColumn = $this->getState('list.ordering', 'number');
+        $orderDirection = $this->getState('list.direction', 'ASC');
+        $query->order($db->escape($orderColumn) . ' ' . $db->escape($orderDirection));
 
-        /* END TABLE SORTING */
+        return $query;
+    }
 }

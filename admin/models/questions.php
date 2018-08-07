@@ -62,6 +62,7 @@ class DKQMakerModelQuestions extends JModelList
         $search = $this->getState('filter.search');
         if (!empty($search))
         {
+            // search inside id when search term starts with id:
             if (stripos($search, 'id:') === 0)
             {
                 $query->where('q.id = ' . (int) substr($search, 3));
