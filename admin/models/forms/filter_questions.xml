@@ -8,5 +8,28 @@
                 description="COM_DKQMAKER_QUESTIONS_SEARCH_DESCRIPTION"
                 hint="JSEARCH_FILTER"
         />
+
+        <field
+                name="quiz_id"
+                type="quiz"
+                extension="com_dkqmaker"
+                label="COM_DKQMAKER_QUESTIONS_FILTER_QUIZ_LABEL"
+                description="COM_DKQMAKER_QUESTIONS_FILTER_QUIZ_DESCRIPTION"
+                onchange="this.form.submit();"
+        >
+            <option value="">COM_DKQMAKER_QUESTIONS_FILTER_QUIZ_SELECT</option>
+        </field>
+
+        <field
+                name="published"
+                type="list"
+                label="COM_DKQMAKER_QUESTIONS_FILTER_PUBLISHED_LABEL"
+                description="COM_DKQMAKER_QUESTIONS_FILTER_PUBLISHED_DESCRIPTION"
+                onchange="this.form.submit();"
+        >
+            <option value="">COM_DKQMAKER_QUESTIONS_FILTER_PUBLISHED_SELECT</option>
+            <option value="1">Online</option>
+            <option value="0">Offline</option>
+        </field>
     </fields>
 </form>

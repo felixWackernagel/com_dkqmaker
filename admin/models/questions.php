@@ -58,6 +58,24 @@ class DKQMakerModelQuestions extends JModelList
             ->from('#__questions as q')
             ->leftJoin('#__quizzes as u ON u.id=q.quiz_id' );
 
+        // Filter by Quiz ID
+        $quizId = $this->getState('filter.quiz_id');
+        if( is_numeric( $quizId ) )
+        {
+            $query->where($db->quoteName('q.quiz_id') . ' = ' . (int) $quizId);
+        }
+
+        // Filter by published
+        $published = $this->getState('filter.published');
+        if (is_numeric($published))
+        {
+            $query->where($db->quoteName('q.published') . ' = ' . (int) $published);
+        }
+        elseif ($published === '')
+        {
+            $query->where($db->quoteName('q.published') . ' IN (0, 1)');
+        }
+
         // Filter by search
         $search = $this->getState('filter.search');
         if (!empty($search))

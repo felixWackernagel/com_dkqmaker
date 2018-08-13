@@ -58,6 +58,17 @@ class DKQMakerModelQuizzes extends JModelList
             ->select('id, number, location, address, quiz_date, quiz_master, latitude, longitude, published, version, last_update')
             ->from('#__quizzes');
 
+        // Filter by published
+        $published = $this->getState('filter.published');
+        if (is_numeric($published))
+        {
+            $query->where($db->quoteName('published') . ' = ' . (int) $published);
+        }
+        elseif ($published === '')
+        {
+            $query->where($db->quoteName('published') . ' IN (0, 1)');
+        }
+
         // Filter by search
         $search = $this->getState('filter.search');
         if (!empty($search))

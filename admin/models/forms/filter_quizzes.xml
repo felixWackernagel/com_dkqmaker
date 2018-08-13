@@ -8,5 +8,17 @@
                 description="COM_DKQMAKER_QUIZZES_SEARCH_DESCRIPTION"
                 hint="JSEARCH_FILTER"
         />
+
+        <field
+                name="published"
+                type="list"
+                label="COM_DKQMAKER_QUIZZES_FILTER_PUBLISHED_LABEL"
+                description="COM_DKQMAKER_QUIZZES_FILTER_PUBLISHED_DESCRIPTION"
+                onchange="this.form.submit();"
+        >
+            <option value="">COM_DKQMAKER_QUIZZES_FILTER_PUBLISHED_SELECT</option>
+            <option value="1">Online</option>
+            <option value="0">Offline</option>
+        </field>
     </fields>
 </form>
