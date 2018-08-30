@@ -41,6 +41,9 @@ class DKQMakerController extends JControllerLegacy
         $apiVersion = intval(JRequest::getVar('v',$this->latestVersion));
         $lastUpdate = JRequest::getVar('lastUpdate','0000-00-00 00:00:00');
 
+        //$appVersion = JFactory::getApplication()->getParams('com_dkqmaker')->get('play_store_app_version');
+        //print_r('appversion='.$appVersion);
+
         // fetch data
 		$data = array();
 		if( $view == 'quizzes' )
@@ -78,6 +81,10 @@ class DKQMakerController extends JControllerLegacy
             {
                 $data = json_decode("{}");
             }
+        }
+        else if( $view == 'messages' || $view == 'message' )
+        {
+            $data = $this->getMessages( $id );
         }
 
 		// set headers for pretty print
@@ -251,5 +258,66 @@ class DKQMakerController extends JControllerLegacy
         $db->setQuery($query);
         $data = $db->LoadObjectList();
         return $this->quizzesToArray( $data );
+    }
+
+    /*
+     * Loads one or all messages.
+     * A message musst be a online_date of today or older.
+     * The offline_date can be null or lies in the future.
+     */
+    public function getMessages( $number )
+    {
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query
+            ->select($db->quoteName(array('id', 'number', 'title', 'content', 'online_date', 'offline_date', 'version', 'last_update')))
+            ->from($db->quoteName('#__dkq_messages'))
+            ->where( 'DATEDIFF( online_date, NOW() ) < 0 AND (DATEDIFF( offline_date, NOW() ) IS NULL OR DATEDIFF( offline_date, NOW() ) > 0)')
+            ->order( 'number ASC');
+
+        if( $number > 0 )
+        {
+            $query->where( 'number =' . $number );
+        }
+
+        $db->setQuery($query);
+        return $this->messagesToArray( $db->LoadObjectList() );
+    }
+
+    public function messagesToArray( &$messages )
+    {
+        $result = array();
+        foreach($messages as &$message)
+        {
+            $converted = $this->messageToArray( $message );
+            if( $converted != null )
+            {
+                $result[] = $converted;
+            }
+        }
+        if( count( $result ) == 1 )
+        {
+            $result = $result[0];
+        }
+        else if( count( $result ) == 0 )
+        {
+            $result = json_decode("{}");
+        }
+        return $result;
+    }
+
+    public function messageToArray( &$message )
+    {
+        if( $message == null ) {
+            return null;
+        }
+
+        return array(
+            "number" => intval( $message->number ),
+            "title" => $message->title,
+            "content" => $message->content,
+            "version" => intval($message->version),
+            "lastUpdate" => $message->last_update
+        );
     }
 }

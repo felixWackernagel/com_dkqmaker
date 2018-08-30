@@ -25,6 +25,7 @@ class DKQMakerRouter extends JComponentRouterBase
         $vars['view'] = $segments[0];
         if( isset( $segments[1] ) )
 		{
+            // ../quiz/5
             if( $segments[0] == 'quiz' )
             {
                 $vars['quiz'] = $segments[1];
@@ -38,15 +39,18 @@ class DKQMakerRouter extends JComponentRouterBase
         {
             if( $segments[0] == 'quiz' )
             {
+                // ../quiz
                 $vars['view'] = 'quizzes';
             }
         }
 
         if( isset( $segments[2] ) && $segments[2] == 'question' )
         {
+            // ../quiz/5/question
             $vars['view'] = 'questions';
             if( isset( $segments[3] ) )
             {
+                // ../quiz/5/question/4
                 $vars['view'] = 'question';
                 $vars['question'] = $segments[3];
             }

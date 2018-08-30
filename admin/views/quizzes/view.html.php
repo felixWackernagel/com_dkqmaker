@@ -2,8 +2,7 @@
 // No direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-// import Joomla view library
-jimport('joomla.application.component.view');
+require_once(JPATH_ADMINISTRATOR.'/'.'components'.'/'.'com_dkqmaker'.'/'.'helpers'.'/'.'menu.php');
 
 class DKQMakerViewQuizzes extends JViewLegacy
 {
@@ -30,26 +29,11 @@ class DKQMakerViewQuizzes extends JViewLegacy
         }
 
         // Display the template
-        $this->addSubmenu('quizzes');
+        MenuHelper::addSubmenu('quizzes');
         $this->sidebar = JHtmlSidebar::render();
         $this->addToolBar();
         $this->setDocument();
         parent::display($tpl);
-    }
-
-    protected function addSubmenu($activeMenu)
-    {
-        JHtmlSidebar::addEntry(
-            JText::_('COM_DKQMAKER_SIDEBAR_MENU_QUIZZES'),
-            'index.php?option=com_dkqmaker&view=quizzes',
-            $activeMenu == 'quizzes'
-        );
-
-        JHtmlSidebar::addEntry(
-            JText::_('COM_DKQMAKER_SIDEBAR_MENU_QUESTIONS'),
-            'index.php?option=com_dkqmaker&view=questions',
-            $activeMenu == 'questions'
-        );
     }
 
     protected function addToolBar()
@@ -58,6 +42,7 @@ class DKQMakerViewQuizzes extends JViewLegacy
         JToolBarHelper::addNew('quiz.add');
         JToolBarHelper::editList('quiz.edit');
         JToolBarHelper::deleteList('', 'quiz.delete');
+        JToolBarHelper::preferences('com_dkqmaker');
     }
 
     protected function setDocument()

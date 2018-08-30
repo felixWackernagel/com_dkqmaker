@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<fieldset
+		name="options"
+		label="Backend"
+	>
+	</fieldset>
+	<fieldset
+			name="params"
+			label="Frontend"
+			description="DKQ Parameter"
+	>
+		<field
+				name="play_store_app_version"
+				type="radio"
+				label="Play Store App Version"
+				description="Aktuelle Version im Play Store"
+				default="0"
+		>
+			<option value="1.0">1.0</option>
+		</field>
+	</fieldset>
+</config>

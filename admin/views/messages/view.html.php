@@ -4,7 +4,7 @@ defined('_JEXEC') or die('Restricted access');
 
 require_once(JPATH_ADMINISTRATOR.'/'.'components'.'/'.'com_dkqmaker'.'/'.'helpers'.'/'.'menu.php');
 
-class DKQMakerViewQuestions extends JViewLegacy
+class DKQMakerViewMessages extends JViewLegacy
 {
     function display($tpl = null)
     {
@@ -29,7 +29,7 @@ class DKQMakerViewQuestions extends JViewLegacy
         }
 
         // Display the template
-        MenuHelper::addSubmenu('questions');
+        MenuHelper::addSubmenu('messages');
         $this->sidebar = JHtmlSidebar::render();
         $this->addToolBar();
         $this->setDocument();
@@ -38,16 +38,16 @@ class DKQMakerViewQuestions extends JViewLegacy
 
     protected function addToolBar()
     {
-        JToolBarHelper::title(JText::_('COM_DKQMAKER_QUESTIONS_TITLE'));
-        JToolBarHelper::addNew('question.add');
-        JToolBarHelper::editList('question.edit');
-        JToolBarHelper::deleteList('', 'question.delete');
+        JToolBarHelper::title(JText::_('COM_DKQMAKER_MESSAGES_TITLE'));
+        JToolBarHelper::addNew('message.add');
+        JToolBarHelper::editList('message.edit');
+        JToolBarHelper::deleteList('', 'message.delete');
         JToolBarHelper::preferences('com_dkqmaker');
     }
 
     protected function setDocument()
     {
         $document = JFactory::getDocument();
-        $document->setTitle(JText::_('COM_DKQMAKER_QUESTIONS_TITLE'));
+        $document->setTitle(JText::_('COM_DKQMAKER_MESSAGES_TITLE'));
     }
 }

@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS `#__quizzes`;
- 
 CREATE TABLE IF NOT EXISTS `#__quizzes` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `number` INT NOT NULL,
@@ -16,24 +14,35 @@ CREATE TABLE IF NOT EXISTS `#__quizzes` (
   UNIQUE INDEX `number_UNIQUE` (`number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
 
-DROP TABLE IF EXISTS `#__questions`;
-
 CREATE TABLE IF NOT EXISTS `#__questions` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `quiz_id` INT NOT NULL DEFAULT 0,
   `question` LONGTEXT NULL,
   `answer` TEXT NULL,
-  `number` INT NOT NULL CHECK (number >= 1 AND number <= 60),
+  `number` INT NOT NULL,
   `published` tinyint(4) NOT NULL DEFAULT 0,
   `version` INT(10) unsigned NOT NULL DEFAULT 1,
   `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
-  UNIQUE INDEX `number_UNIQUE` (`number`),
+  UNIQUE INDEX `quiz_id_number_UNIQUE` (`quiz_id`, `number`),
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_quiz`
   FOREIGN KEY (`id`)
   REFERENCES `#__quizzes` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
+
+CREATE TABLE IF NOT EXISTS `#__dkq_messages` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `number` INT NOT NULL,
+  `title` VARCHAR(100) NULL,
+  `content` VARCHAR(512) NULL,
+  `online_date` DATE DEFAULT NULL,
+  `offline_date` DATE DEFAULT NULL,
+  `version` INT(10) unsigned NOT NULL DEFAULT 1,
+  `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `number_UNIQUE` (`number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
 
 INSERT INTO `#__quizzes` (`number`, `location`, `address`, `quiz_date`, `quiz_master`, `latitude`, `longitude`, `published`) VALUES 
@@ -51,3 +60,11 @@ INSERT INTO `#__questions` (`quiz_id`, `number`, `question`, `answer`, `publishe
 (1, 8, 'Was war der beste Jahrgang?', '1988', 1),
 (1, 9, 'Wer bringt die Babys?', 'Störche', 1),
 (1, 10, 'Ein Hobbit aus Der Herr der Ringe?', 'Frodo Beutlin', 1);
+
+INSERT INTO `#__dkq_messages` (`number`, `title`, `content`, `online_date`, `offline_date`) VALUES
+(1, 'Online', 'ABC', '2018-01-31', 'null'),
+(2, 'Offline', 'ABC', 'null', 'null'),
+(3, 'Offline', 'ABC', 'null', '2020-01-31'),
+(4, 'Noch Online', 'ABC', '2018-01-31', '2020-01-31'),
+(5, 'Bereits Offline', 'ABC', '2018-01-31', '2018-07-31'),
+(6, 'Immer Online', 'ABC', '2018-01-31', 'null');
