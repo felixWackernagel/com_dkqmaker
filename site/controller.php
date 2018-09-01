@@ -41,50 +41,57 @@ class DKQMakerController extends JControllerLegacy
         $apiVersion = intval(JRequest::getVar('v',$this->latestVersion));
         $lastUpdate = JRequest::getVar('lastUpdate','0000-00-00 00:00:00');
 
-        //$appVersion = JFactory::getApplication()->getParams('com_dkqmaker')->get('play_store_app_version');
-        //print_r('appversion='.$appVersion);
-
         // fetch data
 		$data = array();
 		if( $view == 'quizzes' )
 		{
-			// all quizzes without questions
-			$data = $this->getQuizzes();
+			if( $quizNumber > 0 )
+            {
+                // single quiz with questions
+                $data = $this->addQuestions( $this->getQuiz( $quizNumber ) );
+                if( count( $data ) == 1 )
+                {
+                    $data = $data[0];
+                }
+                else if( count( $data ) == 0 )
+                {
+                    $data = json_decode("{}");
+                }
+            }
+            else
+            {
+                // all quizzes without questions
+                $data = $this->getQuizzes();
+            }
 		}
-		else if( $view == 'quiz' && $quizNumber > 0 )
+		else if( $view == 'questions' )
 		{
-			// single quiz with questions
-			$data = $this->addQuestions( $this->getQuiz( $quizNumber ) );
-			if( count( $data ) == 1 )
-			{
-				$data = $data[0];
-			}
-            else if( count( $data ) == 0 )
+			if($quizNumber > 0 && $questionNumber > 0)
             {
-                $data = json_decode("{}");
+                // single question
+                $data = $this->getQuestion( $quizNumber, $questionNumber );
+                if( count( $data ) == 1 )
+                {
+                    $data = $data[0];
+                }
+                else if( count( $data ) == 0 )
+                {
+                    $data = json_decode("{}");
+                }
+            }
+            else if( $quizNumber > 0 )
+            {
+                // all questions of a single quiz
+                $data = $this->getQuestionsForQuizNumber( $quizNumber );
             }
 		}
-		else if( $view == 'questions' && $quizNumber > 0 )
-		{
-			// all questions of a single quiz
-			$data = $this->getQuestionsForQuizNumber( $quizNumber );
-		}
-        else if( $view == 'question' && $quizNumber > 0 && $questionNumber > 0 )
-        {
-            // single question
-            $data = $this->getQuestion( $quizNumber, $questionNumber );
-            if( count( $data ) == 1 )
-            {
-                $data = $data[0];
-            }
-            else if( count( $data ) == 0 )
-            {
-                $data = json_decode("{}");
-            }
-        }
-        else if( $view == 'messages' || $view == 'message' )
+        else if( $view == 'messages' )
         {
             $data = $this->getMessages( $id );
+        }
+        else if( $view == 'configs' )
+        {
+            $data = $this->getConfigs();
         }
 
 		// set headers for pretty print
@@ -318,6 +325,16 @@ class DKQMakerController extends JControllerLegacy
             "content" => $message->content,
             "version" => intval($message->version),
             "lastUpdate" => $message->last_update
+        );
+    }
+
+    public function getConfigs()
+    {
+        $app = JFactory::getApplication();
+        $params = $app->getParams('com_dkqmaker');
+
+        return array(
+            "playStoreVersion" => $params->get('play_store_app_version')
         );
     }
 }
