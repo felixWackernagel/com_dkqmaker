@@ -1,8 +1,9 @@
 CREATE TABLE IF NOT EXISTS `#__dkq_messages` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `number` INT NOT NULL,
-  `title` VARCHAR(100) NULL,
-  `content` VARCHAR(512) NULL,
+  `title` VARCHAR(100),
+  `content` VARCHAR(512),
+  `image` VARCHAR(255),
   `online_date` DATE DEFAULT NULL,
   `offline_date` DATE DEFAULT NULL,
   `version` INT(10) unsigned NOT NULL DEFAULT 1,

@@ -23,6 +23,9 @@ $base=substr($base,0,strlen($base)-strlen("administrator/"));
             <?php echo $item->content; ?>
         </td>
         <td>
+            <?php echo $item->image; ?>
+        </td>
+        <td>
             <?php echo $item->online_date; ?>
         </td>
         <td>

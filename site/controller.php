@@ -277,7 +277,7 @@ class DKQMakerController extends JControllerLegacy
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select($db->quoteName(array('id', 'number', 'title', 'content', 'online_date', 'offline_date', 'version', 'last_update')))
+            ->select($db->quoteName(array('id', 'number', 'title', 'content', 'image', 'online_date', 'offline_date', 'version', 'last_update')))
             ->from($db->quoteName('#__dkq_messages'))
             ->where( 'DATEDIFF( online_date, NOW() ) < 0 AND (DATEDIFF( offline_date, NOW() ) IS NULL OR DATEDIFF( offline_date, NOW() ) > 0)')
             ->order( 'number ASC');
@@ -319,10 +319,16 @@ class DKQMakerController extends JControllerLegacy
             return null;
         }
 
+        $image = '';
+        if( count( $message->image ) > 0 ) {
+            $image = JURI::root() . $message->image;
+        }
+
         return array(
             "number" => intval( $message->number ),
             "title" => $message->title,
             "content" => $message->content,
+            "image" => $image,
             "version" => intval($message->version),
             "lastUpdate" => $message->last_update
         );

@@ -13,6 +13,7 @@ class DKQMakerModelMessages extends JModelList
                 'number',
                 'title',
                 'content',
+                'image',
                 'online_date',
                 'offline_date',
                 'version',
@@ -54,7 +55,7 @@ class DKQMakerModelMessages extends JModelList
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select('id, number, title, content, online_date, offline_date, version, last_update')
+            ->select('id, number, title, content, image, online_date, offline_date, version, last_update')
             ->from('#__dkq_messages');
 
         // Filter by search

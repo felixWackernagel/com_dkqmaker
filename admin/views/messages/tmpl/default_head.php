@@ -19,6 +19,9 @@ defined('_JEXEC') or die('Restricted Access');
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_MESSAGES_HEADER_CONTENT', 'content', $this->sortDirection, $this->sortColumn); ?>
     </th>
     <th>
+        <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_MESSAGES_HEADER_IMAGE', 'image', $this->sortDirection, $this->sortColumn); ?>
+    </th>
+    <th>
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_MESSAGES_HEADER_ONLINE_DATE', 'online_date', $this->sortDirection, $this->sortColumn); ?>
     </th>
     <th>

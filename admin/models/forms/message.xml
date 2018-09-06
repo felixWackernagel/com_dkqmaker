@@ -30,6 +30,13 @@
                 class="inputbox"
                 default=""/>
         <field
+                name="image"
+                type="media"
+                label="COM_DKQMAKER_MESSAGE_IMAGE_LABEL"
+                description="COM_DKQMAKER_MESSAGE_IMAGE_DESCRIPTION"
+                class="inputbox"
+                default=""/>
+        <field
                 name="online_date"
                 type="calendar"
                 label="COM_DKQMAKER_MESSAGE_ONLINE_DATE_LABEL"
