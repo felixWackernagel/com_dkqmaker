@@ -13,7 +13,6 @@ defined('_JEXEC') or die;
 // import Joomla controller library
 jimport('joomla.application.component.controller');
 
-
 /**
  * Class DKQMakerController
  *
