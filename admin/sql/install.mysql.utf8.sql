@@ -25,11 +25,7 @@ CREATE TABLE IF NOT EXISTS `#__questions` (
   `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
   UNIQUE INDEX `quiz_id_number_UNIQUE` (`quiz_id`, `number`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_quiz`
-  FOREIGN KEY (`id`)
-  REFERENCES `#__quizzes` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
+  CONSTRAINT `fk_quiz` FOREIGN KEY (`id`) REFERENCES `#__quizzes` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
 
 CREATE TABLE IF NOT EXISTS `#__dkq_messages` (
@@ -42,6 +38,17 @@ CREATE TABLE IF NOT EXISTS `#__dkq_messages` (
   `offline_date` DATE DEFAULT NULL,
   `version` INT(10) unsigned NOT NULL DEFAULT 1,
   `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `number_UNIQUE` (`number`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
+
+CREATE TABLE IF NOT EXISTS `#__dkq_quizzers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `number` INT NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `image` VARCHAR(255),
+  `version` INT(10) unsigned NOT NULL DEFAULT 1,
+  `last_update` DATETIME,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `number_UNIQUE` (`number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
@@ -69,3 +76,7 @@ INSERT INTO `#__dkq_messages` (`number`, `title`, `content`, `online_date`, `off
 (4, 'Noch Online', 'ABC', '2018-01-31', '2020-01-31'),
 (5, 'Bereits Offline', 'ABC', '2018-01-31', '2018-07-31'),
 (6, 'Immer Online', 'ABC', '2018-01-31', 'null');
+
+INSERT INTO `#__dkq_quizzers` (`number`, `name`) VALUES
+(1, 'Felix W.'),
+(2, 'Tim S.');

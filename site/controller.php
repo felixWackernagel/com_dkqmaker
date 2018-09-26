@@ -93,6 +93,10 @@ class DKQMakerController extends JControllerLegacy
         {
             $data = $this->getConfigs();
         }
+        else if( $view == 'quizzers' )
+        {
+            $data = $this->getQuizzers( $id );
+        }
 
 		// set headers for pretty print
 		header('content-type: application/json; charset=utf-8');
@@ -341,6 +345,69 @@ class DKQMakerController extends JControllerLegacy
 
         return array(
             "playStoreVersion" => $params->get('play_store_app_version')
+        );
+    }
+
+    /*
+     * Loads one or all quizzers.
+     */
+    public function getQuizzers( $number )
+    {
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query
+            ->select($db->quoteName(array('id', 'number', 'name', 'image', 'version', 'last_update')))
+            ->from($db->quoteName('#__dkq_quizzers'))
+            ->order( 'number ASC');
+
+        if( $number > 0 )
+        {
+            $query->where( 'number =' . $number );
+        }
+
+        $db->setQuery($query);
+        return $this->quizzersToArray( $db->LoadObjectList() );
+    }
+
+    public function quizzersToArray( &$quizzers )
+    {
+        $result = array();
+        foreach($quizzers as &$quizzer)
+        {
+            $converted = $this->quizzerToArray( $quizzer );
+            if( $converted != null )
+            {
+                $result[] = $converted;
+            }
+        }
+        if( count( $result ) == 1 )
+        {
+            $result = $result[0];
+        }
+        else if( count( $result ) == 0 )
+        {
+            $result = json_decode("{}");
+        }
+        return $result;
+    }
+
+    public function quizzerToArray( &$quizzer )
+    {
+        if( $quizzer == null ) {
+            return null;
+        }
+
+        $image = '';
+        if( count( $quizzer->image ) > 0 ) {
+            $image = JURI::root() . $quizzer->image;
+        }
+
+        return array(
+            "number" => intval( $quizzer->number ),
+            "name" => $quizzer->name,
+            "image" => $image,
+            "version" => intval($quizzer->version),
+            "lastUpdate" => $quizzer->last_update
         );
     }
 }

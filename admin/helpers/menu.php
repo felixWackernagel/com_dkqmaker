@@ -23,6 +23,12 @@ class MenuHelper {
             'index.php?option=com_dkqmaker&view=messages',
             $activeMenu == 'messages'
         );
+
+        JHtmlSidebar::addEntry(
+            JText::_('COM_DKQMAKER_SIDEBAR_MENU_QUIZZERS'),
+            'index.php?option=com_dkqmaker&view=quizzers',
+            $activeMenu == 'quizzers'
+        );
     }
 
 }

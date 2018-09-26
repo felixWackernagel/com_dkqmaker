@@ -7,7 +7,7 @@
     <authorUrl>http://www.felixwackernagel.de</authorUrl>
     <copyright>Copyright (C) 2018. All rights reserved.</copyright>
     <license>Apache License 2.0</license>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <description>COM_DKQMAKER_DESCRIPTION</description>
     <install>
         <sql>
@@ -40,6 +40,40 @@
 
     <administration>
         <menu link='index.php?option=com_dkqmaker'>COM_DKQMAKER_MENU</menu>
+        <submenu>
+            <!--
+                Note that all & must be escaped to &amp; for the file to be valid
+                XML and be parsed by the installer
+            -->
+            <menu
+                    link="option=com_dkqmaker&amp;view=quizzes"
+                    view="quizzes"
+                    alt="DKQ Maker/Quizzes"
+            >
+                COM_DKQMAKER_MENU_QUIZZES
+            </menu>
+            <menu
+                    link="option=com_dkqmaker&amp;view=questions"
+                    view="questions"
+                    alt="DKQ Maker/Questions"
+            >
+                COM_DKQMAKER_MENU_QUESTIONS
+            </menu>
+            <menu
+                    link="option=com_dkqmaker&amp;view=messages"
+                    view="messages"
+                    alt="DKQ Maker/Messages"
+            >
+                COM_DKQMAKER_MENU_MESSAGES
+            </menu>
+            <menu
+                    link="option=com_dkqmaker&amp;view=quizzers"
+                    view="quizzers"
+                    alt="DKQ Maker/Quizzers"
+            >
+                COM_DKQMAKER_MENU_QUIZZERS
+            </menu>
+        </submenu>
         <files folder="admin">
             <filename>index.html</filename>
             <filename>dkqmaker.php</filename>

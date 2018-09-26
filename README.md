@@ -27,3 +27,9 @@ Joomla component to create quizzes with questions and popuate over a api.
 
 ### Get an array of key-value pairs
 /configs
+
+### Get an array of quizzers
+/quizzers
+
+### Get a quizzer object
+/quizzers/{message-number}
