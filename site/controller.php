@@ -88,13 +88,13 @@ class DKQMakerController extends JControllerLegacy
         {
             $data = $this->getMessages( $id );
         }
-        else if( $view == 'configs' )
-        {
-            $data = $this->getConfigs();
-        }
         else if( $view == 'quizzers' )
         {
             $data = $this->getQuizzers( $id );
+        }
+        else if( $view == 'versions' )
+        {
+            $data = $this->checkVersion( $id );
         }
 
 		// set headers for pretty print
@@ -337,13 +337,14 @@ class DKQMakerController extends JControllerLegacy
         );
     }
 
-    public function getConfigs()
+    public function checkVersion( $versionCode )
     {
         $app = JFactory::getApplication();
         $params = $app->getParams('com_dkqmaker');
+        $appVersion = $params->get('play_store_app_version');
 
         return array(
-            "playStoreVersion" => $params->get('play_store_app_version')
+            "validVersion" => ($appVersion == $versionCode ? 1 : 0 )
         );
     }
 
