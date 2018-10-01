@@ -13,7 +13,7 @@ class DKQMakerRouter extends JComponentRouterBase
 {
 	public function build(&$query)
 	{
-	    // Looks like unused because no user friendly url must be created from the system.
+        // Looks like unused because no user friendly url must be created from the system.
 		$segments = array();
 		return $segments;
 	}
@@ -22,38 +22,47 @@ class DKQMakerRouter extends JComponentRouterBase
 	{
 		$vars = array();
 
-        $vars['view'] = $segments[0];
-        if( isset( $segments[1] ) )
+		$startIndex = 0;
+
+		$segmentOne = $segments[$startIndex];
+        $segmentOneLength = strlen( $segmentOne );
+		if( substr( $segmentOne, 0, 1 ) == 'v' ) {
+            $startIndex = 1;
+            $vars['v'] = substr( $segmentOne, 1, $segmentOneLength );
+        }
+
+        $vars['view'] = $segments[$startIndex];
+        if( isset( $segments[$startIndex + 1] ) )
 		{
             // ../quiz/5
-            if( $segments[0] == 'quiz' || $segments[0] == 'quizzes' )
+            if( $segments[$startIndex] == 'quiz' || $segments[$startIndex] == 'quizzes' )
             {
                 $vars['view'] = 'quizzes';
-                $vars['quiz'] = $segments[1];
+                $vars['quiz'] = $segments[$startIndex+1];
             }
             else
             {
-                $vars['id'] = $segments[1];
+                $vars['id'] = $segments[$startIndex+1];
             }
 		}
 		else
         {
-            if( $segments[0] == 'quiz' )
+            if( $segments[$startIndex] == 'quiz' )
             {
                 // ../quiz
                 $vars['view'] = 'quizzes';
             }
         }
 
-        if( isset( $segments[2] ) && ( $segments[2] == 'question' || $segments[2] == 'questions' ) )
+        if( isset( $segments[$startIndex+2] ) && ( $segments[$startIndex+2] == 'question' || $segments[$startIndex+2] == 'questions' ) )
         {
             // ../quiz/5/question
             $vars['view'] = 'questions';
-            if( isset( $segments[3] ) )
+            if( isset( $segments[$startIndex+3] ) )
             {
                 // ../quiz/5/question/4
                 $vars['view'] = 'questions';
-                $vars['question'] = $segments[3];
+                $vars['question'] = $segments[$startIndex+3];
             }
         }
 		return $vars;
