@@ -291,10 +291,10 @@ class DKQMakerController extends JControllerLegacy
         }
 
         $db->setQuery($query);
-        return $this->messagesToArray( $db->LoadObjectList() );
+        return $this->messagesToArray( $db->LoadObjectList(), $number > 0 );
     }
 
-    public function messagesToArray( &$messages )
+    public function messagesToArray( &$messages, $singleItem )
     {
         $result = array();
         foreach($messages as &$message)
@@ -305,7 +305,7 @@ class DKQMakerController extends JControllerLegacy
                 $result[] = $converted;
             }
         }
-        if( count( $result ) == 1 )
+        if( count( $result ) == 1 && $singleItem )
         {
             $result = $result[0];
         }
@@ -323,7 +323,7 @@ class DKQMakerController extends JControllerLegacy
         }
 
         $image = '';
-        if( count( $message->image ) > 0 ) {
+        if( strlen( $message->image ) > 0 ) {
             $image = JURI::root() . $message->image;
         }
 
@@ -366,10 +366,10 @@ class DKQMakerController extends JControllerLegacy
         }
 
         $db->setQuery($query);
-        return $this->quizzersToArray( $db->LoadObjectList() );
+        return $this->quizzersToArray( $db->LoadObjectList(), $number > 0  );
     }
 
-    public function quizzersToArray( &$quizzers )
+    public function quizzersToArray( &$quizzers, $singleItem )
     {
         $result = array();
         foreach($quizzers as &$quizzer)
@@ -380,7 +380,7 @@ class DKQMakerController extends JControllerLegacy
                 $result[] = $converted;
             }
         }
-        if( count( $result ) == 1 )
+        if( count( $result ) == 1 && $singleItem )
         {
             $result = $result[0];
         }

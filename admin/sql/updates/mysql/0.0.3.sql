@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `#__dkq_messages` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `number` INT NOT NULL,
   `title` VARCHAR(100),
-  `content` VARCHAR(512),
+  `content` VARCHAR(1024),
   `image` VARCHAR(255),
   `online_date` DATE DEFAULT NULL,
   `offline_date` DATE DEFAULT NULL,

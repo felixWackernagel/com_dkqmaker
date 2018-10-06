@@ -1,0 +1,1 @@
+ALTER TABLE `#__dkq_messages` MODIFY COLUMN `content` VARCHAR(1024);

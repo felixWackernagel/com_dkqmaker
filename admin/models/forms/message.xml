@@ -59,7 +59,8 @@
                 format="%Y-%m-%d"
                 singleheader="true"
                 translateformat="true"
-                showtime="false"/>
+                showtime="false"
+                default=""/>
         <field
                 name="version"
                 type="number"
