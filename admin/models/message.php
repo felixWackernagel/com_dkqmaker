@@ -52,10 +52,15 @@ class DKQMakerModelMessage extends JModelAdmin
         {
                 // Check the session for previously entered form data.
                 $data = JFactory::getApplication()->getUserState('com_dkqmaker.edit.message.data', array());
-                if (empty($data))
+                if( empty( $data ) )
                 {
                         $data = $this->getItem();
                 }
+
+                if( $data->offline_date == '0000-00-00' || $data->offline_date == '0000-00-00 00:00:00') {
+                    $data->offline_date = NULL;
+                }
+
                 return $data;
         }
 

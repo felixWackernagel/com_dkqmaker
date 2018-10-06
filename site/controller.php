@@ -282,7 +282,7 @@ class DKQMakerController extends JControllerLegacy
         $query
             ->select($db->quoteName(array('id', 'number', 'title', 'content', 'image', 'online_date', 'offline_date', 'version', 'last_update')))
             ->from($db->quoteName('#__dkq_messages'))
-            ->where( 'DATEDIFF( online_date, NOW() ) < 0 AND (DATEDIFF( offline_date, NOW() ) IS NULL OR DATEDIFF( offline_date, NOW() ) > 0)')
+            ->where( 'DATEDIFF( online_date, NOW() ) <= 0 AND (DATEDIFF( offline_date, NOW() ) IS NULL OR DATEDIFF( offline_date, NOW() ) > 0)')
             ->order( 'number ASC');
 
         if( $number > 0 )
@@ -311,30 +311,47 @@ class DKQMakerController extends JControllerLegacy
         }
         else if( count( $result ) == 0 )
         {
-            $result = json_decode("{}");
+            if( $singleItem )
+            {
+                $result = json_decode("{}");
+            }
+            else
+            {
+                $result = json_decode("[]");
+            }
         }
         return $result;
     }
 
     public function messageToArray( &$message )
     {
-        if( $message == null ) {
+        if( $message == null )
+        {
             return null;
         }
 
-        $image = '';
-        if( strlen( $message->image ) > 0 ) {
+        if( strlen( $message->image ) > 0 )
+        {
             $image = JURI::root() . $message->image;
+            return array(
+                "number" => intval( $message->number ),
+                "title" => $message->title,
+                "content" => $message->content,
+                "image" => $image,
+                "version" => intval($message->version),
+                "lastUpdate" => $message->last_update
+            );
         }
-
-        return array(
-            "number" => intval( $message->number ),
-            "title" => $message->title,
-            "content" => $message->content,
-            "image" => $image,
-            "version" => intval($message->version),
-            "lastUpdate" => $message->last_update
-        );
+        else
+        {
+            return array(
+                "number" => intval( $message->number ),
+                "title" => $message->title,
+                "content" => $message->content,
+                "version" => intval($message->version),
+                "lastUpdate" => $message->last_update
+            );
+        }
     }
 
     public function checkVersion( $versionCode )
