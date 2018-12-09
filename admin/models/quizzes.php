@@ -9,17 +9,17 @@ class DKQMakerModelQuizzes extends JModelList
         // searchable fields
         if( empty( $config['filter_fields'] ) ) {
             $config['filter_fields'] = array(
-                'id',
-                'number',
-                'location',
-                'address',
-                'quiz_date',
-                'quiz_master',
-                'latitude',
-                'longitude',
-                'published',
-                'version',
-                'last_update'
+                'id', 'q.id',
+                'number', 'q.number',
+                'location', 'q.location',
+                'address', 'q.address',
+                'quiz_date', 'q.quiz_date',
+                'name', 'u.name', 'w.name',
+                'latitude', 'q.latitude',
+                'longitude', 'q.longitude',
+                'published', 'q.published',
+                'version', 'q.version',
+                'last_update', 'q.last_update'
             );
         }
         parent::__construct($config);
@@ -55,8 +55,10 @@ class DKQMakerModelQuizzes extends JModelList
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select('id, number, location, address, quiz_date, quiz_master, latitude, longitude, published, version, last_update')
-            ->from('#__quizzes');
+            ->select('q.id, q.number, q.location, q.address, q.quiz_date, u.name as quiz_master_name, w.name as winner_name, q.latitude, q.longitude, q.published, q.version, q.last_update')
+            ->from('#__quizzes as q')
+            ->leftJoin('#__dkq_quizzers as u ON u.id = q.quiz_master_id')
+            ->leftJoin('#__dkq_quizzers as w ON w.id = q.winner_id');
 
         // Filter by published
         $published = $this->getState('filter.published');
@@ -67,6 +69,20 @@ class DKQMakerModelQuizzes extends JModelList
         elseif ($published === '')
         {
             $query->where($db->quoteName('published') . ' IN (0, 1)');
+        }
+
+        // Filter by quiz master id
+        $quizMasterId = $this->getState('filter.quiz_master_id');
+        if (is_numeric($quizMasterId))
+        {
+            $query->where($db->quoteName('quiz_master_id') . ' = ' . (int) $quizMasterId);
+        }
+
+        // Filter by winner id
+        $winnerId = $this->getState('filter.winner_id');
+        if (is_numeric($winnerId))
+        {
+            $query->where($db->quoteName('winner_id') . ' = ' . (int) $winnerId);
         }
 
         // Filter by search
@@ -81,7 +97,7 @@ class DKQMakerModelQuizzes extends JModelList
             else
             {
                 $search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
-                $query->where('(location LIKE ' . $search . ' OR number LIKE ' . $search . ' OR address LIKE ' . $search . ' OR quiz_date LIKE ' . $search . ' OR quiz_master LIKE ' . $search . ' OR latitude LIKE ' . $search . ' OR longitude LIKE ' . $search . ')');
+                $query->where('(location LIKE ' . $search . ' OR number LIKE ' . $search . ' OR address LIKE ' . $search . ' OR quiz_date LIKE ' . $search . ' OR latitude LIKE ' . $search . ' OR longitude LIKE ' . $search . ')');
             }
         }
 

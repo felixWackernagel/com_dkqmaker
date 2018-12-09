@@ -1,17 +1,31 @@
+CREATE TABLE IF NOT EXISTS `#__dkq_quizzers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `number` INT NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `image` VARCHAR(255),
+  `version` INT(10) unsigned NOT NULL DEFAULT 1,
+  `last_update` DATETIME,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `number_UNIQUE` (`number`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
+
 CREATE TABLE IF NOT EXISTS `#__quizzes` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `number` INT NOT NULL,
   `location` VARCHAR(100) NULL,
   `address` VARCHAR(255) NULL,
-  `quiz_date` DATETIME DEFAULT '0000-00-00 00:00:00',
-  `quiz_master` VARCHAR(45) NULL,
+  `quiz_date` DATETIME DEFAULT NULL,
+  `quiz_master_id` INT NOT NULL DEFAULT 0,
+  `winner_id` INT NOT NULL DEFAULT 0,
   `latitude` DOUBLE NOT NULL DEFAULT 0,
   `longitude` DOUBLE NOT NULL DEFAULT 0,
   `published` tinyint(4) NOT NULL DEFAULT 0,
   `version` INT(10) unsigned NOT NULL DEFAULT 1,
-  `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
+  `last_update` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `number_UNIQUE` (`number`)
+  UNIQUE INDEX `number_UNIQUE` (`number`),
+  CONSTRAINT `fk_quiz_master` FOREIGN KEY (`quiz_master_id`) REFERENCES `#__dkq_quizzers` (`id`),
+  CONSTRAINT `fk_winner` FOREIGN KEY (`winner_id`) REFERENCES `#__dkq_quizzers` (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
 
 CREATE TABLE IF NOT EXISTS `#__questions` (
@@ -42,20 +56,13 @@ CREATE TABLE IF NOT EXISTS `#__dkq_messages` (
   UNIQUE INDEX `number_UNIQUE` (`number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
 
-CREATE TABLE IF NOT EXISTS `#__dkq_quizzers` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `number` INT NOT NULL,
-  `name` VARCHAR(100) NOT NULL,
-  `image` VARCHAR(255),
-  `version` INT(10) unsigned NOT NULL DEFAULT 1,
-  `last_update` DATETIME,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `number_UNIQUE` (`number`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
+INSERT INTO `#__dkq_quizzers` (`number`, `name`, `last_update`) VALUES
+(1, 'Felix W.', NOW()),
+(2, 'Tim S.', NOW());
 
-INSERT INTO `#__quizzes` (`number`, `location`, `address`, `quiz_date`, `quiz_master`, `latitude`, `longitude`, `published`) VALUES 
-(35, 'Zapfanstalt', 'Sebnitzer Str. 15, 01099 Dresden', '2018-06-30 20:00:00', 'Martin', 51.0689046, 13.7556929, 1),
-(34, 'Barneby - Die Spielebar', 'Görlitzer Straße 11, 01099 Dresden', '2018-03-30 20:00:00', 'Martin', 51.0671455, 13.7541441, 1);
+INSERT INTO `#__quizzes` (`number`, `location`, `address`, `quiz_date`, `quiz_master_id`, `winner_id`, `latitude`, `longitude`, `published`) VALUES
+(35, 'Zapfanstalt', 'Sebnitzer Str. 15, 01099 Dresden', '2018-06-30 20:00:00', 1, 2, 51.0689046, 13.7556929, 1),
+(34, 'Barneby - Die Spielebar', 'Görlitzer Straße 11, 01099 Dresden', '2018-03-30 20:00:00', 2, 1, 51.0671455, 13.7541441, 1);
 
 INSERT INTO `#__questions` (`quiz_id`, `number`, `question`, `answer`, `published`) VALUES 
 (1, 1, '1+1=', '2', 1),
@@ -76,7 +83,3 @@ INSERT INTO `#__dkq_messages` (`number`, `title`, `content`, `online_date`, `off
 (4, 'Noch Online', 'ABC', '2018-01-31', '2020-01-31'),
 (5, 'Bereits Offline', 'ABC', '2018-01-31', '2018-07-31'),
 (6, 'Immer Online', 'ABC', '2018-01-31', 'null');
-
-INSERT INTO `#__dkq_quizzers` (`number`, `name`) VALUES
-(1, 'Felix W.'),
-(2, 'Tim S.');

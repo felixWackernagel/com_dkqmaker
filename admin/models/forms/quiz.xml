@@ -52,14 +52,29 @@
                 minyear="0"
                 maxyear="2"/>
         <field
-                name="quiz_master"
-                type="text"
-                label="COM_DKQMAKER_QUIZ_QUIZ_MASTER_LABEL"
-                description="COM_DKQMAKER_QUIZ_QUIZ_MASTER_DESCRIPTION"
+                name="quiz_master_id"
+                type="sql"
+                default=""
+                label="COM_DKQMAKER_QUIZ_QUIZ_MASTER_ID_LABEL"
+                description="COM_DKQMAKER_QUIZ_QUIZ_MASTER_ID_DESCRIPTION"
                 required="false"
-                size="40"
-                class="inputbox"
-                default=""/>
+                query="SELECT id, name FROM #__dkq_quizzers"
+                key_field="id"
+                value_field="name"
+                header="COM_DKQMAKER_QUIZ_QUIZ_MASTER_ID_SELECTOR"
+                class="required validate-numeric"/>
+        <field
+                name="winner_id"
+                type="sql"
+                default=""
+                label="COM_DKQMAKER_QUIZ_WINNER_ID_LABEL"
+                description="COM_DKQMAKER_QUIZ_WINNER_ID_DESCRIPTION"
+                required="false"
+                query="SELECT id, name FROM #__dkq_quizzers"
+                key_field="id"
+                value_field="name"
+                header="COM_DKQMAKER_QUIZ_WINNER_ID_SELECTOR"
+                class="required validate-numeric"/>
         <field
                 name="latitude"
                 type="text"

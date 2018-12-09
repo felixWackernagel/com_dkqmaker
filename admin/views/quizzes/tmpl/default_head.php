@@ -22,7 +22,10 @@ defined('_JEXEC') or die('Restricted Access');
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUIZZES_HEADER_ID_QUIZ_DATE', 'quiz_date', $this->sortDirection, $this->sortColumn); ?>
     </th>
     <th>
-        <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUIZZES_HEADER_QUIZ_MASTER', 'quiz_master', $this->sortDirection, $this->sortColumn); ?>
+        <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUIZZES_HEADER_QUIZ_MASTER', 'quiz_master_name', $this->sortDirection, $this->sortColumn); ?>
+    </th>
+    <th>
+        <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUIZZES_HEADER_WINNER', 'winner_name', $this->sortDirection, $this->sortColumn); ?>
     </th>
     <th>
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUIZZES_HEADER_LATITUDE', 'latitude', $this->sortDirection, $this->sortColumn); ?>

@@ -10,6 +10,28 @@
         />
 
         <field
+                name="quiz_master_id"
+                type="quizzer"
+                extension="com_dkqmaker"
+                label="COM_DKQMAKER_QUIZZES_FILTER_QUIZ_MASTER_ID_LABEL"
+                description="COM_DKQMAKER_QUIZZES_FILTER_QUIZ_MASTER_ID_DESCRIPTION"
+                onchange="this.form.submit();"
+        >
+            <option value="">COM_DKQMAKER_QUIZZES_FILTER_QUIZ_MASTER_ID_SELECT</option>
+        </field>
+
+        <field
+                name="winner_id"
+                type="quizzer"
+                extension="com_dkqmaker"
+                label="COM_DKQMAKER_QUIZZES_FILTER_WINNER_ID_LABEL"
+                description="COM_DKQMAKER_QUIZZES_FILTER_WINNER_ID_DESCRIPTION"
+                onchange="this.form.submit();"
+        >
+            <option value="">COM_DKQMAKER_QUIZZES_FILTER_WINNER_ID_SELECT</option>
+        </field>
+
+        <field
                 name="published"
                 type="list"
                 label="COM_DKQMAKER_QUIZZES_FILTER_PUBLISHED_LABEL"

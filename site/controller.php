@@ -28,7 +28,8 @@ jimport('joomla.application.component.controller');
  */
 class DKQMakerController extends JControllerLegacy
 {
-    private $latestVersion = 1;
+    private $latestVersion = 3;
+    private $V3 = 3;
 
 	public function show()
 	{
@@ -47,7 +48,7 @@ class DKQMakerController extends JControllerLegacy
 			if( $quizNumber > 0 )
             {
                 // single quiz with questions
-                $data = $this->addQuestions( $this->getQuiz( $quizNumber ) );
+                $data = $this->addReferences( $this->getQuiz( $quizNumber ), $apiVersion );
                 if( count( $data ) == 1 )
                 {
                     $data = $data[0];
@@ -60,7 +61,7 @@ class DKQMakerController extends JControllerLegacy
             else
             {
                 // all quizzes without questions
-                $data = $this->getQuizzes();
+                $data = $this->getQuizzes($apiVersion);
             }
 		}
 		else if( $view == 'questions' )
@@ -108,17 +109,17 @@ class DKQMakerController extends JControllerLegacy
 		$app->close();
 	}
 
-	public function quizzesToArray( &$quizzes )
+	public function quizzesToArray( &$quizzes, $apiVersion )
 	{
 		$result = array();
 		foreach($quizzes as &$quiz)
 		{
-		    $result[] = $this->quizToArray( $quiz );
+		    $result[] = $this->quizToArray( $quiz, $apiVersion );
 		}
 		return $result;
 	}
 
-	public function quizToArray( &$quiz )
+	public function quizToArray( &$quiz, $apiVersion )
 	{
 	    if( $quiz == null ) {
 	        return array();
@@ -138,7 +139,8 @@ class DKQMakerController extends JControllerLegacy
                 "location" => $quiz->location,
                 "address" => $quiz->address,
                 "quizDate" => $quiz->quiz_date,
-                "quizMaster" => $quiz->quiz_master,
+                "quizMaster" => $this->getQuizzerForQuiz($quiz->quiz_master_id, $apiVersion),
+                "winner" => $this->getQuizzerForQuiz($quiz->winner_id, $apiVersion),
                 "latitude" => floatval($quiz->latitude),
                 "longitude" => floatval($quiz->longitude),
                 "version" => intval($quiz->version),
@@ -146,7 +148,7 @@ class DKQMakerController extends JControllerLegacy
                 "lastUpdate" => $quiz->last_update
             );
         }
-	}
+    }
 
 	public function questionsToArray( &$questions )
 	{
@@ -188,10 +190,70 @@ class DKQMakerController extends JControllerLegacy
         }
 	}
 
-	public function addQuestions(&$quiz)
+    public function addReferences(&$quizModel, $apiVersion)
+    {
+        $result = array();
+        $row = $this->quizToArray( $quizModel, $apiVersion );
+        if( $quizModel != null && $quizModel->published == 1 ) {
+            $row["questions"] = $this->getQuestionsForQuiz($quizModel->id);
+        }
+        if( count( $row ) > 0 ) {
+            $result[] = $row;
+        }
+        return $result;
+    }
+
+    public function getQuizzerForQuiz($quizzerId, $apiVersion)
+    {
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query
+            ->select('id, number, name, image, version, last_update' )
+            ->from('#__dkq_quizzers' )
+            ->where('id=' . $quizzerId );
+        $db->setQuery($query);
+        $data= $db->LoadObject();
+        return $this->quizzerToArray( $data, $apiVersion );
+    }
+
+    public function quizzerToArray($quizzerModel, $apiVersion)
+    {
+        if( $quizzerModel == null )
+        {
+            return null;
+        }
+
+        if( $apiVersion < $this->V3 )
+        {
+            return $quizzerModel->name;
+        }
+
+        if( strlen( $quizzerModel->image ) > 0 )
+        {
+            $image = JURI::root() . $quizzerModel->image;
+            return array(
+                "number" => intval( $quizzerModel->number ),
+                "name" => $quizzerModel->name,
+                "image" => $image,
+                "version" => intval($quizzerModel->version),
+                "lastUpdate" => $quizzerModel->last_update
+            );
+        }
+        else
+        {
+            return array(
+                "number" => intval( $quizzerModel->number ),
+                "name" => $quizzerModel->name,
+                "version" => intval($quizzerModel->version),
+                "lastUpdate" => $quizzerModel->last_update
+            );
+        }
+    }
+
+	public function addQuestions(&$quiz, $apiVersion)
 	{
 		$result = array();
-        $row = $this->quizToArray( $quiz );
+        $row = $this->quizToArray( $quiz, $apiVersion );
         if( $quiz != null && $quiz->published == 1 ) {
             $row["questions"] = $this->getQuestionsForQuiz($quiz->id);
         }
@@ -249,7 +311,7 @@ class DKQMakerController extends JControllerLegacy
 	    $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select($db->quoteName(array('id', 'number', 'location', 'address', 'quiz_date', 'quiz_master', 'latitude', 'longitude', 'version', 'last_update', 'published')))
+            ->select($db->quoteName(array('id', 'number', 'location', 'address', 'quiz_date', 'quiz_master_id', 'winner_id', 'latitude', 'longitude', 'version', 'last_update', 'published')))
             ->from($db->quoteName('#__quizzes'))
             ->where($db->quoteName('number') . '=' . $number );
         $db->setQuery($query);
@@ -257,17 +319,17 @@ class DKQMakerController extends JControllerLegacy
         return $data;
     }
 
-    public function getQuizzes()
+    public function getQuizzes($apiVersion)
     {
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select($db->quoteName(array('id', 'number', 'location', 'address', 'quiz_date', 'quiz_master', 'latitude', 'longitude', 'version', 'last_update', 'published')))
+            ->select($db->quoteName(array('id', 'number', 'location', 'address', 'quiz_date', 'quiz_master_id', 'winner_id', 'latitude', 'longitude', 'version', 'last_update', 'published')))
             ->from($db->quoteName('#__quizzes'))
             ->order('number ASC');
         $db->setQuery($query);
         $data = $db->LoadObjectList();
-        return $this->quizzesToArray( $data );
+        return $this->quizzesToArray( $data, $apiVersion );
     }
 
     /*
@@ -391,7 +453,7 @@ class DKQMakerController extends JControllerLegacy
         $result = array();
         foreach($quizzers as &$quizzer)
         {
-            $converted = $this->quizzerToArray( $quizzer );
+            $converted = $this->standaloneQuizzerToArray( $quizzer );
             if( $converted != null )
             {
                 $result[] = $converted;
@@ -408,23 +470,24 @@ class DKQMakerController extends JControllerLegacy
         return $result;
     }
 
-    public function quizzerToArray( &$quizzer )
+    public function standaloneQuizzerToArray( &$quizzer )
     {
         if( $quizzer == null ) {
             return null;
         }
 
-        $image = '';
-        if( count( $quizzer->image ) > 0 ) {
-            $image = JURI::root() . $quizzer->image;
-        }
-
-        return array(
+        $result = array(
             "number" => intval( $quizzer->number ),
             "name" => $quizzer->name,
-            "image" => $image,
             "version" => intval($quizzer->version),
             "lastUpdate" => $quizzer->last_update
         );
+
+        if( count( $quizzer->image ) > 0 ) {
+            $image = JURI::root() . $quizzer->image;
+            $result["image"] = $image;
+        }
+
+        return $result;
     }
 }

@@ -26,7 +26,10 @@ $base=substr($base,0,strlen($base)-strlen("administrator/"));
             <?php echo $item->quiz_date; ?>
         </td>
         <td>
-            <?php echo $item->quiz_master; ?>
+            <?php echo $item->quiz_master_name; ?>
+        </td>
+        <td>
+            <?php echo $item->winner_name; ?>
         </td>
         <td>
             <?php echo $item->latitude; ?>
