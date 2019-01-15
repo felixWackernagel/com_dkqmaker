@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `#__questions` (
   `question` LONGTEXT NULL,
   `answer` TEXT NULL,
   `number` INT NOT NULL,
+  `image` VARCHAR(255),
   `published` tinyint(4) NOT NULL DEFAULT 0,
   `version` INT(10) unsigned NOT NULL DEFAULT 1,
   `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',

@@ -126,27 +126,32 @@ class DKQMakerController extends JControllerLegacy
         }
 	    if( $quiz->published == 0 ) {
             return array(
-                //"id" => intval( $quiz->id ),
                 "number" => intval( $quiz->number ),
                 "version" => intval( $quiz->version ),
                 "published" => intval( $quiz->published ),
                 "lastUpdate" => $quiz->last_update
             );
         } else {
-            return array(
-                //"id" => intval($quiz->id),
+            $result = array(
                 "number" => intval($quiz->number),
                 "location" => $quiz->location,
-                "address" => $quiz->address,
                 "quizDate" => $quiz->quiz_date,
-                "quizMaster" => $this->getQuizzerForQuiz($quiz->quiz_master_id, $apiVersion),
-                "winner" => $this->getQuizzerForQuiz($quiz->winner_id, $apiVersion),
                 "latitude" => floatval($quiz->latitude),
                 "longitude" => floatval($quiz->longitude),
                 "version" => intval($quiz->version),
                 "published" => intval($quiz->published),
                 "lastUpdate" => $quiz->last_update
             );
+            if( count( $quiz->address ) > 0 ) {
+                $result["address"] = $quiz->address;
+            }
+            if( $quiz->quiz_master_id > 0 ) {
+                $result["quizMaster"] = $this->getQuizzerForQuiz($quiz->quiz_master_id, $apiVersion);
+            }
+            if( $quiz->winner_id > 0 ) {
+                $result["winner"] = $this->getQuizzerForQuiz($quiz->winner_id, $apiVersion);
+            }
+            return $result;
         }
     }
 
@@ -169,7 +174,6 @@ class DKQMakerController extends JControllerLegacy
         if( $question->published == 0 )
         {
             return array(
-                //"id" => intval($question->id),
                 "number" => intval($question->number),
                 "published" => intval($question->published),
                 "version" => intval($question->version),
@@ -178,8 +182,7 @@ class DKQMakerController extends JControllerLegacy
         }
         else
         {
-            return array(
-                //"id" => intval($question->id),
+            $result = array(
                 "number" => intval($question->number),
                 "question" => $question->question,
                 "answer" => $question->answer,
@@ -187,6 +190,11 @@ class DKQMakerController extends JControllerLegacy
                 "version" => intval($question->version),
                 "lastUpdate" => $question->last_update
             );
+            if( count( $question->image ) > 0 ) {
+                $image = JURI::root() . $question->image;
+                $result["image_url"] = $image;
+            }
+            return $result;
         }
 	}
 
@@ -268,7 +276,7 @@ class DKQMakerController extends JControllerLegacy
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select('q.id, q.number, q.question, q.answer, q.version, q.last_update, q.published' )
+            ->select('q.id, q.number, q.question, q.answer, q.image, q.version, q.last_update, q.published' )
             ->from('#__questions as q' )
             ->leftJoin('#__quizzes as x ON x.id = q.quiz_id' )
             ->where('x.number=' . $quizNumber )
@@ -283,7 +291,7 @@ class DKQMakerController extends JControllerLegacy
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select($db->quoteName(array('id', 'number', 'question', 'answer', 'version', 'last_update', 'published')))
+            ->select($db->quoteName(array('id', 'number', 'question', 'image', 'answer', 'version', 'last_update', 'published')))
             ->from($db->quoteName('#__questions'))
             ->where($db->quoteName('quiz_id') . '=' . $quizId )
             ->order('number ASC');
@@ -297,7 +305,7 @@ class DKQMakerController extends JControllerLegacy
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select('q.id, q.number, q.question, q.answer, q.version, q.last_update, q.published')
+            ->select('q.id, q.number, q.question, q.answer, q.image, q.version, q.last_update, q.published')
             ->from('#__questions as q')
             ->leftJoin('#__quizzes as x ON x.id = q.quiz_id' )
             ->where('x.number =' . $quizNumber . ' AND q.number =' . $questionNumber );

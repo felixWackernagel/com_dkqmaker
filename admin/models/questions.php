@@ -13,6 +13,7 @@ class DKQMakerModelQuestions extends JModelList
                 'quiz_id', 'q.quiz_id',
                 'question', 'q.question',
                 'answer', 'q.answer',
+                'image', 'q.image',
                 'number', 'q.number',
                 'published', 'q.published',
                 'version', 'q.version',
@@ -54,7 +55,7 @@ class DKQMakerModelQuestions extends JModelList
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select('q.id, u.number as quiz_number, q.number, q.question, q.answer, q.published, q.version, q.last_update')
+            ->select('q.id, u.number as quiz_number, q.number, q.question, q.answer, q.image, q.published, q.version, q.last_update')
             ->from('#__questions as q')
             ->leftJoin('#__quizzes as u ON u.id=q.quiz_id' );
 

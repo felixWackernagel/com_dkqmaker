@@ -44,6 +44,13 @@
                 class="inputbox"
                 default=""/>
         <field
+                name="image"
+                type="media"
+                label="COM_DKQMAKER_QUESTION_IMAGE_LABEL"
+                description="COM_DKQMAKER_QUESTION_IMAGE_DESCRIPTION"
+                class="inputbox"
+                default=""/>
+        <field
                 name="version"
                 type="number"
                 label="COM_DKQMAKER_QUESTION_VERSION_LABEL"

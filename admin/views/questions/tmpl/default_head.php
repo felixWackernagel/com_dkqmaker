@@ -22,6 +22,9 @@ defined('_JEXEC') or die('Restricted Access');
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUESTIONS_HEADER_ANSWER', 'q.answer', $this->sortDirection, $this->sortColumn); ?>
     </th>
     <th>
+        <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUESTIONS_HEADER_IMAGE', 'q.image', $this->sortDirection, $this->sortColumn); ?>
+    </th>
+    <th>
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUESTIONS_HEADER_PUBLISHED', 'q.published', $this->sortDirection, $this->sortColumn); ?>
     </th>
     <th>

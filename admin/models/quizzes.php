@@ -97,7 +97,7 @@ class DKQMakerModelQuizzes extends JModelList
             else
             {
                 $search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
-                $query->where('(location LIKE ' . $search . ' OR number LIKE ' . $search . ' OR address LIKE ' . $search . ' OR quiz_date LIKE ' . $search . ' OR latitude LIKE ' . $search . ' OR longitude LIKE ' . $search . ')');
+                $query->where('(location LIKE ' . $search . ' OR q.number LIKE ' . $search . ' OR address LIKE ' . $search . ' OR quiz_date LIKE ' . $search . ' OR latitude LIKE ' . $search . ' OR longitude LIKE ' . $search . ' OR u.name LIKE ' . $search . ' OR w.name LIKE ' . $search . ')');
             }
         }
 

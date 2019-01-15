@@ -25,6 +25,9 @@ $base=substr($base,0,strlen($base)-strlen("administrator/"));
         <td>
             <?php echo $item->answer; ?>
         </td>
+        <td>
+            <?php echo $item->image; ?>
+        </td>
 	    <td>
 	        <?php echo JHtml::_('jgrid.published', $item->published, $i, 'questions.', true, 'cb'); ?>
         </td>
