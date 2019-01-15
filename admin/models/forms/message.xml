@@ -45,7 +45,6 @@
                 required="false"
                 filter="user_utc"
                 format="%Y-%m-%d"
-                singleheader="true"
                 translateformat="true"
                 showtime="false"/>
         <field
@@ -57,10 +56,8 @@
                 required="false"
                 filter="user_utc"
                 format="%Y-%m-%d"
-                singleheader="true"
                 translateformat="true"
-                showtime="false"
-                default=""/>
+                showtime="false"/>
         <field
                 name="version"
                 type="number"

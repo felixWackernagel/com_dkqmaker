@@ -23,7 +23,7 @@
                 required="false"
                 class="inputbox"
                 default=""/>
-	<field
+	    <field
                 name="address"
                 type="textarea"
                 label="COM_DKQMAKER_QUIZ_ADDRESS_LABEL"
@@ -37,20 +37,16 @@
                 type="calendar"
                 label="COM_DKQMAKER_QUIZ_QUIZ_DATE_LABEL"
                 description="COM_DKQMAKER_QUIZ_QUIZ_DATE_DESCRIPTION"
-                default=""
                 class="input-medium"
                 required="false"
                 filter="user_utc"
                 format="%Y-%m-%d %H:%M:%S"
-                singleheader="true"
                 translateformat="true"
                 showtime="true"
                 timeformat="24"
                 todaybutton="false"
                 weeknumbers="true"
-                filltable="true"
-                minyear="0"
-                maxyear="2"/>
+                filltable="true"/>
         <field
                 name="quiz_master_id"
                 type="sql"
