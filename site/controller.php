@@ -7,29 +7,17 @@
 * @license GNU General Public License version 2 or later; see LICENSE.txt
 */
  
-// No direct access to this file
 defined('_JEXEC') or die;
- 
-// import Joomla controller library
+
 jimport('joomla.application.component.controller');
 
-/**
- * Class DKQMakerController
- *
- * App Workflow:
- * search local for quiz by number
- * if quiz not found
- *  then insert
- * else if online quiz version > local quiz version
- *  then update
- * else
- *  do nothing
- *
- */
+JLoader::register('MessagesHelper', JPATH_ADMINISTRATOR . '/components/com_dkqmaker/helpers/messagesHelper.php');
+JLoader::register('QuizzersHelper', JPATH_ADMINISTRATOR . '/components/com_dkqmaker/helpers/quizzersHelper.php');
+JLoader::register('VersionsHelper', JPATH_ADMINISTRATOR . '/components/com_dkqmaker/helpers/versionsHelper.php');
+
 class DKQMakerController extends JControllerLegacy
 {
-    private $latestVersion = 3;
-    private $V3 = 3;
+    private $latestVersion = 4;
 
 	public function show()
 	{
@@ -41,61 +29,28 @@ class DKQMakerController extends JControllerLegacy
         $apiVersion = intval(JRequest::getVar('v',$this->latestVersion));
         $lastUpdate = JRequest::getVar('lastUpdate','0000-00-00 00:00:00');
 
-        // fetch data
-		$data = array();
-		if( $view == 'quizzes' )
-		{
-			if( $quizNumber > 0 )
-            {
-                // single quiz with questions
-                $data = $this->addReferences( $this->getQuiz( $quizNumber ), $apiVersion );
-                if( count( $data ) == 1 )
-                {
-                    $data = $data[0];
-                }
-                else if( count( $data ) == 0 )
-                {
-                    $data = json_decode("{}");
-                }
-            }
-            else
-            {
-                // all quizzes without questions
-                $data = $this->getQuizzes($apiVersion);
-            }
-		}
-		else if( $view == 'questions' )
-		{
-			if($quizNumber > 0 && $questionNumber > 0)
-            {
-                // single question
-                $data = $this->getQuestion( $quizNumber, $questionNumber );
-                if( count( $data ) == 1 )
-                {
-                    $data = $data[0];
-                }
-                else if( count( $data ) == 0 )
-                {
-                    $data = json_decode("{}");
-                }
-            }
-            else if( $quizNumber > 0 )
-            {
-                // all questions of a single quiz
-                $data = $this->getQuestionsForQuizNumber( $quizNumber );
-            }
-		}
-        else if( $view == 'messages' )
+        $data = array();
+        switch( $view )
         {
-            $data = $this->getMessages( $id );
-        }
-        else if( $view == 'quizzers' )
-        {
-            $data = $this->getQuizzers( $id );
-        }
-        else if( $view == 'versions' )
-        {
-            $data = $this->checkVersion( $id );
+            case "quizzes":
+                $data = $this->getQuizJSON( $quizNumber, $apiVersion );
+                break;
+
+            case "questions":
+                $data = $this->getQuestionJSON( $quizNumber, $questionNumber );
+                break;
+
+            case "messages":
+                $data = MessagesHelper::instance( $apiVersion )->buildJsonData( $id );
+                break;
+
+            case "quizzers":
+                $data = QuizzersHelper::instance( $apiVersion )->buildJsonData( $id );
+                break;
+
+            case "versions":
+                $data = VersionsHelper::instance( $apiVersion )->buildJsonData( $id );
+                break;
         }
 
 		// set headers for pretty print
@@ -108,6 +63,54 @@ class DKQMakerController extends JControllerLegacy
 		$app = JFactory::getApplication('site');
 		$app->close();
 	}
+
+	public function getQuizJSON( $quizNumber, $apiVersion )
+    {
+        $data = array();
+        if( $quizNumber > 0 )
+        {
+            // single quiz with questions
+            $data = $this->addReferences( $this->getQuiz( $quizNumber ), $apiVersion );
+            if( count( $data ) == 1 )
+            {
+                $data = $data[0];
+            }
+            else if( count( $data ) == 0 )
+            {
+                $data = json_decode("{}");
+            }
+        }
+        else
+        {
+            // all quizzes without questions
+            $data = $this->getQuizzes($apiVersion);
+        }
+        return $data;
+    }
+
+	public function getQuestionJSON( $quizNumber, $questionNumber )
+    {
+        $data = array();
+        if($quizNumber > 0 && $questionNumber > 0)
+        {
+            // single question
+            $data = $this->getQuestion( $quizNumber, $questionNumber );
+            if( count( $data ) == 1 )
+            {
+                $data = $data[0];
+            }
+            else if( count( $data ) == 0 )
+            {
+                $data = json_decode("{}");
+            }
+        }
+        else if( $quizNumber > 0 )
+        {
+            // all questions of a single quiz
+            $data = $this->getQuestionsForQuizNumber( $quizNumber );
+        }
+        return $data;
+    }
 
 	public function quizzesToArray( &$quizzes, $apiVersion )
 	{
@@ -231,7 +234,7 @@ class DKQMakerController extends JControllerLegacy
             return null;
         }
 
-        if( $apiVersion < $this->V3 )
+        if( $apiVersion < 3 )
         {
             return $quizzerModel->name;
         }
@@ -338,164 +341,5 @@ class DKQMakerController extends JControllerLegacy
         $db->setQuery($query);
         $data = $db->LoadObjectList();
         return $this->quizzesToArray( $data, $apiVersion );
-    }
-
-    /*
-     * Loads one or all messages.
-     * A message musst be a online_date of today or older.
-     * The offline_date can be null or lies in the future.
-     */
-    public function getMessages( $number )
-    {
-        $db = JFactory::getDBO();
-        $query = $db->getQuery(true);
-        $query
-            ->select($db->quoteName(array('id', 'number', 'title', 'content', 'image', 'online_date', 'offline_date', 'version', 'last_update')))
-            ->from($db->quoteName('#__dkq_messages'))
-            ->where( 'DATEDIFF( online_date, NOW() ) <= 0 AND (DATEDIFF( offline_date, NOW() ) IS NULL OR DATEDIFF( offline_date, NOW() ) > 0)')
-            ->order( 'number ASC');
-
-        if( $number > 0 )
-        {
-            $query->where( 'number =' . $number );
-        }
-
-        $db->setQuery($query);
-        return $this->messagesToArray( $db->LoadObjectList(), $number > 0 );
-    }
-
-    public function messagesToArray( &$messages, $singleItem )
-    {
-        $result = array();
-        foreach($messages as &$message)
-        {
-            $converted = $this->messageToArray( $message );
-            if( $converted != null )
-            {
-                $result[] = $converted;
-            }
-        }
-        if( count( $result ) == 1 && $singleItem )
-        {
-            $result = $result[0];
-        }
-        else if( count( $result ) == 0 )
-        {
-            if( $singleItem )
-            {
-                $result = json_decode("{}");
-            }
-            else
-            {
-                $result = json_decode("[]");
-            }
-        }
-        return $result;
-    }
-
-    public function messageToArray( &$message )
-    {
-        if( $message == null )
-        {
-            return null;
-        }
-
-        if( strlen( $message->image ) > 0 )
-        {
-            $image = JURI::root() . $message->image;
-            return array(
-                "number" => intval( $message->number ),
-                "title" => $message->title,
-                "content" => $message->content,
-                "image" => $image,
-                "version" => intval($message->version),
-                "lastUpdate" => $message->last_update
-            );
-        }
-        else
-        {
-            return array(
-                "number" => intval( $message->number ),
-                "title" => $message->title,
-                "content" => $message->content,
-                "version" => intval($message->version),
-                "lastUpdate" => $message->last_update
-            );
-        }
-    }
-
-    public function checkVersion( $versionCode )
-    {
-        $app = JFactory::getApplication();
-        $params = $app->getParams('com_dkqmaker');
-        $appVersion = $params->get('play_store_app_version');
-
-        return array(
-            "validVersion" => ($appVersion == $versionCode ? 1 : 0 )
-        );
-    }
-
-    /*
-     * Loads one or all quizzers.
-     */
-    public function getQuizzers( $number )
-    {
-        $db = JFactory::getDBO();
-        $query = $db->getQuery(true);
-        $query
-            ->select($db->quoteName(array('id', 'number', 'name', 'image', 'version', 'last_update')))
-            ->from($db->quoteName('#__dkq_quizzers'))
-            ->order( 'number ASC');
-
-        if( $number > 0 )
-        {
-            $query->where( 'number =' . $number );
-        }
-
-        $db->setQuery($query);
-        return $this->quizzersToArray( $db->LoadObjectList(), $number > 0  );
-    }
-
-    public function quizzersToArray( &$quizzers, $singleItem )
-    {
-        $result = array();
-        foreach($quizzers as &$quizzer)
-        {
-            $converted = $this->standaloneQuizzerToArray( $quizzer );
-            if( $converted != null )
-            {
-                $result[] = $converted;
-            }
-        }
-        if( count( $result ) == 1 && $singleItem )
-        {
-            $result = $result[0];
-        }
-        else if( count( $result ) == 0 )
-        {
-            $result = json_decode("{}");
-        }
-        return $result;
-    }
-
-    public function standaloneQuizzerToArray( &$quizzer )
-    {
-        if( $quizzer == null ) {
-            return null;
-        }
-
-        $result = array(
-            "number" => intval( $quizzer->number ),
-            "name" => $quizzer->name,
-            "version" => intval($quizzer->version),
-            "lastUpdate" => $quizzer->last_update
-        );
-
-        if( count( $quizzer->image ) > 0 ) {
-            $image = JURI::root() . $quizzer->image;
-            $result["image"] = $image;
-        }
-
-        return $result;
     }
 }
