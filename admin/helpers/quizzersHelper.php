@@ -18,7 +18,7 @@ class QuizzersHelper extends JsonHelper
         return new self( $apiVersion );
     }
 
-    protected function loadFromDB( $quizzerNumber )
+    protected function loadFromDB( $quizzerNumber, $parent = null )
     {
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
@@ -36,9 +36,9 @@ class QuizzersHelper extends JsonHelper
         return $db->LoadObjectList();
     }
 
-    protected function modelToArray( $quizzer )
+    protected function modelToArray( $quizzer, $singleModel )
     {
-        if( $quizzer == null ) {
+        if( is_null ( $quizzer ) ) {
             return null;
         }
 

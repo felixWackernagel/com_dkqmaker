@@ -23,7 +23,7 @@ class MessagesHelper extends JsonHelper
     * A message musst be a online_date of today or older.
     * The offline_date can be null or lies in the future.
     */
-    protected function loadFromDB( $messageNumber )
+    protected function loadFromDB( $messageNumber, $parent = null )
     {
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
@@ -42,10 +42,9 @@ class MessagesHelper extends JsonHelper
         return $db->LoadObjectList();
     }
 
-    protected function modelToArray( $message )
+    protected function modelToArray( $message, $singleModel )
     {
-        if( $message == null )
-        {
+        if( is_null( $message ) ) {
             return null;
         }
 
@@ -57,8 +56,7 @@ class MessagesHelper extends JsonHelper
             "lastUpdate" => $message->last_update
         );
 
-        if( strlen( $message->image ) > 0 )
-        {
+        if( strlen( $message->image ) > 0 ) {
             $imageUrl = JURI::root() . $message->image;
             $json["image"] = $imageUrl;
         }

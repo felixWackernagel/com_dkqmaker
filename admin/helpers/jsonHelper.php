@@ -12,10 +12,10 @@ abstract class JsonHelper
         $this->apiVersion = $apiVersion;
     }
 
-    public function buildJsonData( $number )
+    public function buildJsonData( $number, $parent = null )
     {
         $singleModel = $number > 0;
-        $modelsList = $this->loadFromDB( $number );
+        $modelsList = $this->loadFromDB( $number, $parent );
 
         if( count( $modelsList ) == 0 )
         {
@@ -33,27 +33,36 @@ abstract class JsonHelper
             }
         }
 
-        $modelsJsonData = $this->modelsToArray( $modelsList );
+        $jsonDataList = $this->modelsToArray( $modelsList, $singleModel );
 
-        if( count( $modelsJsonData ) == 1 && $singleModel )
+        if( count( $jsonDataList ) == 0 && $singleModel )
         {
-            return $modelsJsonData[0];
+            // unpublished single model
+            if( $this->apiVersion >= 4 )
+            {
+                throw new Exception("no model found", 404);
+            }
+            return json_decode("{}");
+        }
+        else if( count( $jsonDataList ) == 1 && $singleModel )
+        {
+            return $jsonDataList[0];
         }
         else
         {
-            return $modelsJsonData;
+            return $jsonDataList;
         }
     }
 
-    abstract protected function loadFromDB( $number );
+    abstract protected function loadFromDB( $number, $parent = null );
 
-    private function modelsToArray( $models )
+    private function modelsToArray( $models, $singleModel )
     {
         $result = array();
-        foreach($models as &$model)
+        foreach( $models as &$model )
         {
-            $converted = $this->modelToArray( $model );
-            if( $converted != null )
+            $converted = $this->modelToArray( $model, $singleModel );
+            if( !is_null( $converted ) )
             {
                 $result[] = $converted;
             }
@@ -61,5 +70,5 @@ abstract class JsonHelper
         return $result;
     }
 
-    abstract protected function modelToArray( $model );
+    abstract protected function modelToArray( $model, $singleModel );
 }
