@@ -27,7 +27,7 @@ class QuizzersHelper extends JsonHelper
             ->from($db->quoteName('#__dkq_quizzers'))
             ->order( 'number ASC');
 
-        if( $quizzerNumber > 0 )
+        if( $quizzerNumber !=  -1 )
         {
             $query->where( 'number =' . $quizzerNumber );
         }

@@ -25,9 +25,9 @@ class DKQMakerController extends JControllerLegacy
 	{
 		// read url parameter
         $view = JRequest::getVar('view', 'quizzes');
-        $id = intval(JRequest::getVar('id',0));
-        $quizNumber = intval(JRequest::getVar('quiz',0));
-        $questionNumber = intval(JRequest::getVar('question',0));
+        $id = intval(JRequest::getVar('id',-1));
+        $quizNumber = intval(JRequest::getVar('quiz',-1));
+        $questionNumber = intval(JRequest::getVar('question',-1));
         $apiVersion = intval(JRequest::getVar('v',$this->latestVersion));
         $lastUpdate = JRequest::getVar('lastUpdate','0000-00-00 00:00:00');
 

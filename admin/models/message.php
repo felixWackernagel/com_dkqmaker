@@ -55,6 +55,7 @@ class DKQMakerModelMessage extends JModelAdmin
                 if( empty( $data ) )
                 {
                         $data = $this->getItem();
+                        $data->number = $this->loadNextMessageNumber();
                 }
 
                 if( $data->offline_date == '0000-00-00' || $data->offline_date == '0000-00-00 00:00:00') {
@@ -63,6 +64,17 @@ class DKQMakerModelMessage extends JModelAdmin
 
                 return $data;
         }
+
+    private function loadNextMessageNumber()
+    {
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query
+            ->select('MAX(' . $db->quoteName('number') .')' )
+            ->from( $db->quoteName('#__dkq_messages' ) );
+        $db->setQuery($query);
+        return intval( $db->loadResult() ) + 1;
+    }
 
         /**
          * Prepare and sanitise the table data prior to saving.

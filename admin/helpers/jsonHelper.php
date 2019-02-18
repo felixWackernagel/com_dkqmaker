@@ -14,7 +14,7 @@ abstract class JsonHelper
 
     public function buildJsonData( $number, $parent = null )
     {
-        $singleModel = $number > 0;
+        $singleModel = $number != -1;
         $modelsList = $this->loadFromDB( $number, $parent );
 
         if( count( $modelsList ) == 0 )

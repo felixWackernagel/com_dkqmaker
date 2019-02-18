@@ -24,7 +24,4 @@ defined('_JEXEC') or die('Restricted Access');
     <th>
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_QUIZZERS_HEADER_LAST_UPDATE', 'last_update', $this->sortDirection, $this->sortColumn); ?>
     </th>
-    <th>
-
-    </th>
 </tr>

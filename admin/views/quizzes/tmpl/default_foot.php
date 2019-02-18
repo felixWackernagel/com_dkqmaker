@@ -3,5 +3,5 @@
 defined('_JEXEC') or die('Restricted Access');
 ?>
 <tr>
-        <td colspan="14"><?php echo $this->pagination->getListFooter(); ?></td>
+        <td colspan="13"><?php echo $this->pagination->getListFooter(); ?></td>
 </tr>

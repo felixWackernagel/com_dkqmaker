@@ -29,7 +29,7 @@ class QuestionsHelper extends JsonHelper
             ->where('x.number =' . $quizNumber )
             ->order('q.number ASC' );
 
-        if( !is_null( $questionNumber ) && $questionNumber > 0 )
+        if( !is_null( $questionNumber ) && $questionNumber != -1 )
         {
             $query->where( 'q.number =' . $questionNumber );
         }

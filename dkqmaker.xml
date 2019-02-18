@@ -7,7 +7,7 @@
     <authorUrl>http://www.felixwackernagel.de</authorUrl>
     <copyright>Copyright (C) 2018. All rights reserved.</copyright>
     <license>Apache License 2.0</license>
-    <version>0.0.8</version>
+    <version>0.0.10</version>
     <description>COM_DKQMAKER_DESCRIPTION</description>
     <install>
         <sql>

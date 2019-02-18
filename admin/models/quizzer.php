@@ -55,8 +55,20 @@ class DKQMakerModelQuizzer extends JModelAdmin
                 if (empty($data))
                 {
                         $data = $this->getItem();
+                        $data->number = $this->loadNextQuizzerNumber();
                 }
                 return $data;
+        }
+
+        private function loadNextQuizzerNumber()
+        {
+            $db = JFactory::getDBO();
+            $query = $db->getQuery(true);
+            $query
+                ->select('MAX(' . $db->quoteName('number') .')' )
+                ->from( $db->quoteName('#__dkq_quizzers' ) );
+            $db->setQuery($query);
+            return intval( $db->loadResult() ) + 1;
         }
 
         /**

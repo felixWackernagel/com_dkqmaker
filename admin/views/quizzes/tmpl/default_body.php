@@ -46,8 +46,5 @@ $base=substr($base,0,strlen($base)-strlen("administrator/"));
         <td>
             <?php echo $item->last_update; ?>
         </td>
-        <td>
-            <a href="<?php echo $base . 'index.php/dkq/v1/quizzes/' . $item->number; ?>" target="_blank">API</a>
-        </td>
     </tr>
 <?php endforeach; ?>

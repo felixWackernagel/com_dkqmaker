@@ -40,11 +40,12 @@ CREATE TABLE IF NOT EXISTS `#__questions` (
   `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
   UNIQUE INDEX `quiz_id_number_UNIQUE` (`quiz_id`, `number`),
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_quiz` FOREIGN KEY (`id`) REFERENCES `#__quizzes` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fk_quiz` FOREIGN KEY (`quiz_id`) REFERENCES `#__quizzes` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
 
 CREATE TABLE IF NOT EXISTS `#__dkq_messages` (
   `id` INT NOT NULL AUTO_INCREMENT,
+  `quiz_id` INT NOT NULL DEFAULT 0,
   `number` INT NOT NULL,
   `title` VARCHAR(100),
   `content` VARCHAR(1024),
@@ -54,7 +55,8 @@ CREATE TABLE IF NOT EXISTS `#__dkq_messages` (
   `version` INT(10) unsigned NOT NULL DEFAULT 1,
   `last_update` DATETIME DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `number_UNIQUE` (`number`)
+  UNIQUE INDEX `number_UNIQUE` (`number`),
+  CONSTRAINT `fk_quiz` FOREIGN KEY (`quiz_id`) REFERENCES `#__quizzes` (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8  AUTO_INCREMENT=0;
 
 INSERT INTO `#__dkq_quizzers` (`number`, `name`, `last_update`) VALUES

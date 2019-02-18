@@ -13,6 +13,9 @@ defined('_JEXEC') or die('Restricted Access');
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_MESSAGES_HEADER_NUMBER', 'number', $this->sortDirection, $this->sortColumn); ?>
     </th>
     <th>
+        <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_MESSAGES_HEADER_QUIZ_ID', 'quiz_number', $this->sortDirection, $this->sortColumn); ?>
+    </th>
+    <th>
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_MESSAGES_HEADER_TITLE', 'title', $this->sortDirection, $this->sortColumn); ?>
     </th>
     <th>
@@ -32,8 +35,5 @@ defined('_JEXEC') or die('Restricted Access');
     </th>
     <th>
         <?php echo JHTML::_( 'grid.sort', 'COM_DKQMAKER_MESSAGES_HEADER_LAST_UPDATE', 'last_update', $this->sortDirection, $this->sortColumn); ?>
-    </th>
-    <th>
-
     </th>
 </tr>

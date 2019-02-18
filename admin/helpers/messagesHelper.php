@@ -28,14 +28,17 @@ class MessagesHelper extends JsonHelper
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select($db->quoteName(array('id', 'number', 'title', 'content', 'image', 'online_date', 'offline_date', 'version', 'last_update')))
-            ->from($db->quoteName('#__dkq_messages'))
-            ->where( 'DATEDIFF( online_date, NOW() ) <= 0 AND (DATEDIFF( offline_date, NOW() ) IS NULL OR DATEDIFF( offline_date, NOW() ) > 0)')
-            ->order( 'number ASC');
+            ->select($db->quoteName(
+                array('m.id','m.number','q.number','m.title','m.content','m.image','m.online_date','m.offline_date', 'm.version', 'm.last_update'),
+                array(null,null,'quizNumber',null,null,null,null,null,null,null)))
+            ->from('#__dkq_messages AS m' )
+            ->leftJoin('#__quizzes AS q ON q.id = m.quiz_id' )
+            ->where( 'DATEDIFF( m.online_date, NOW() ) <= 0 AND (DATEDIFF( m.offline_date, NOW() ) IS NULL OR DATEDIFF( m.offline_date, NOW() ) > 0)')
+            ->order( 'm.number ASC');
 
-        if( $messageNumber > 0 )
+        if( $messageNumber != -1 )
         {
-            $query->where( 'number =' . $messageNumber );
+            $query->where( 'm.number =' . $messageNumber );
         }
 
         $db->setQuery($query);
@@ -48,10 +51,17 @@ class MessagesHelper extends JsonHelper
             return null;
         }
 
+        // Foreign key value 0 throws error but null is valid on SQLITE.
+        $quizNumber = intval( $message->quizNumber );
+        if( $quizNumber == 0 ) {
+            $quizNumber = null;
+        }
+
         $json = array(
             "number" => intval( $message->number ),
             "title" => $message->title,
             "content" => $message->content,
+            "quizNumber" => $quizNumber,
             "version" => intval($message->version),
             "lastUpdate" => $message->last_update
         );

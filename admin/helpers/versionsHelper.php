@@ -20,7 +20,7 @@ class VersionsHelper
 
     public function buildJsonData( $version )
     {
-        $singleVersion = $version > 0;
+        $singleVersion = $version != -1;
 
         if( $singleVersion )
         {

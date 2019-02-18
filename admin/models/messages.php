@@ -9,15 +9,16 @@ class DKQMakerModelMessages extends JModelList
         // searchable fields
         if( empty( $config['filter_fields'] ) ) {
             $config['filter_fields'] = array(
-                'id',
-                'number',
-                'title',
-                'content',
-                'image',
-                'online_date',
-                'offline_date',
-                'version',
-                'last_update'
+                'id', 'm.id',
+                'number', 'm.number',
+                'quiz_id', 'm.quiz_id',
+                'title', 'm.title',
+                'content', 'm.content',
+                'image', 'm.image',
+                'online_date', 'm.online_date',
+                'offline_date', 'm.offline_date',
+                'version', 'm.version',
+                'last_update', 'm.last_update'
             );
         }
         parent::__construct($config);
@@ -55,8 +56,9 @@ class DKQMakerModelMessages extends JModelList
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query
-            ->select('id, number, title, content, image, online_date, offline_date, version, last_update')
-            ->from('#__dkq_messages');
+            ->select('m.id, m.number, q.number as quiz_number, m.title, m.content, m.image, m.online_date, m.offline_date, m.version, m.last_update')
+            ->from('#__dkq_messages AS m')
+            ->leftJoin('#__quizzes as q ON q.id=m.quiz_id' );
 
         // Filter by search
         $search = $this->getState('filter.search');
