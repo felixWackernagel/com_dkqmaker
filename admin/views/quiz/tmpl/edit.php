@@ -1,8 +1,24 @@
 <?php
 // No direct access
 defined('_JEXEC') or die('Restricted access');
+
 JHtml::_('behavior.tooltip');
+JHtml::_('behavior.formvalidator');
 ?>
+<script type="text/javascript">
+    /* Override joomla.javascript, as form-validation not work with ToolBar */
+    var submitbuttonfn = Joomla.submitbutton;
+    Joomla.submitbutton = function( pressedButtonTask ) {
+        if( pressedButtonTask.includes( 'cancel' ) ) {
+            submitbuttonfn(pressedButtonTask);
+        } else {
+            var form = document.adminForm;
+            if( document.formvalidator.isValid( form ) ) {
+                submitbuttonfn( pressedButtonTask );
+            }
+        }
+    }
+</script>
 <form action="<?php echo JRoute::_('index.php?option=com_dkqmaker&view=quiz&layout=edit&id=' . (int) $this->item->id); ?>"
     method="post" name="adminForm" id="adminForm">
     <div class="form-horizontal">

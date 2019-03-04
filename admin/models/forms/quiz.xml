@@ -57,8 +57,7 @@
                 query="SELECT id, name FROM #__dkq_quizzers"
                 key_field="id"
                 value_field="name"
-                header="COM_DKQMAKER_QUIZ_QUIZ_MASTER_ID_SELECTOR"
-                class="required validate-numeric"/>
+                header="COM_DKQMAKER_QUIZ_QUIZ_MASTER_ID_SELECTOR"/>
         <field
                 name="winner_id"
                 type="sql"
@@ -69,8 +68,7 @@
                 query="SELECT id, name FROM #__dkq_quizzers"
                 key_field="id"
                 value_field="name"
-                header="COM_DKQMAKER_QUIZ_WINNER_ID_SELECTOR"
-                class="required validate-numeric"/>
+                header="COM_DKQMAKER_QUIZ_WINNER_ID_SELECTOR"/>
         <field
                 name="latitude"
                 type="text"
