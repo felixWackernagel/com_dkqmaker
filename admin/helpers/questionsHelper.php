@@ -18,6 +18,19 @@ class QuestionsHelper extends JsonHelper
         return new self( $apiVersion );
     }
 
+    protected function existDependentModel( $quizNumber )
+    {
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query
+            ->select($db->quoteName('id'))
+            ->from($db->quoteName('#__quizzes'))
+            ->where( 'number =' . $quizNumber );
+        $db->setQuery($query);
+        return count( $db->LoadObjectList() ) > 0;
+
+    }
+
     protected function loadFromDB( $quizNumber, $questionNumber = null )
     {
         $db = JFactory::getDBO();

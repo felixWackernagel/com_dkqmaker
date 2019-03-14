@@ -14,7 +14,14 @@ abstract class JsonHelper
 
     public function buildJsonData( $number, $parent = null )
     {
-        $singleModel = $number != -1;
+        $singleModel = ( is_null( $parent ) && $this->apiVersion >= 4 ) ? $number != -1 : $parent != -1;
+
+        if( !is_null( $parent ) && $this->apiVersion >= 4 ) {
+            if( !$this->existDependentModel( $number ) ) {
+                throw new Exception("no parent model found", 404);
+            }
+        }
+
         $modelsList = $this->loadFromDB( $number, $parent );
 
         if( count( $modelsList ) == 0 )
@@ -52,6 +59,11 @@ abstract class JsonHelper
         {
             return $jsonDataList;
         }
+    }
+
+    protected function existDependentModel( $dependency )
+    {
+        return true;
     }
 
     abstract protected function loadFromDB( $number, $parent = null );
