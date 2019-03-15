@@ -83,7 +83,7 @@ class QuestionsHelper extends JsonHelper
 
         if( strlen( $question->image ) > 0 ) {
             $imageUrl = JURI::root() . $question->image;
-            $json["image_url"] = $imageUrl;
+            $json["image"] = $imageUrl;
         }
 
         return $json;
