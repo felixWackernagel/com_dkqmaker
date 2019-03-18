@@ -22,5 +22,17 @@
 			<option value="3">3.0</option>
 			<option value="4">4.0</option>
 		</field>
+
+		<field
+				name="web_api_enabled"
+				type="radio"
+				label="COM_DKQMAKER_CONFIG_WEB_API"
+				description="COM_DKQMAKER_CONFIG_WEB_API_DESCRIPTION"
+				default="1"
+		>
+			<option value="0">COM_DKQMAKER_CONFIG_WEB_API_DISABLED</option>
+			<option value="1">COM_DKQMAKER_CONFIG_WEB_API_ENABLED</option>
+		</field>
+
 	</fieldset>
 </config>

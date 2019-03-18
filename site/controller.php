@@ -23,7 +23,7 @@ class DKQMakerController extends JControllerLegacy
 
 	public function show()
 	{
-		// read url parameter
+        // read url parameter
         $view = JRequest::getVar('view', 'quizzes');
         $id = intval(JRequest::getVar('id',-1));
         $quizNumber = intval(JRequest::getVar('quiz',-1));
@@ -32,27 +32,65 @@ class DKQMakerController extends JControllerLegacy
         $lastUpdate = JRequest::getVar('lastUpdate','0000-00-00 00:00:00');
 
         $data = array();
-        switch( $view )
+
+        $app = JFactory::getApplication();
+        $params = $app->getParams('com_dkqmaker');
+        $apiEnabled = $params->get('web_api_enabled');
+
+        if( $apiEnabled == 1 || $apiVersion < 4 )
         {
-            case "quizzes":
-                $data = QuizzesHelper::instance( $apiVersion )->buildJsonData( $quizNumber );
-                break;
+            try {
+                $result = array();
+                switch ($view) {
+                    case "quizzes":
+                        $result = QuizzesHelper::instance($apiVersion)->buildJsonData($quizNumber);
+                        break;
 
-            case "questions":
-                $data = QuestionsHelper::instance( $apiVersion )->buildJsonData( $quizNumber, $questionNumber );
-                break;
+                    case "questions":
+                        $result = QuestionsHelper::instance($apiVersion)->buildJsonData($quizNumber, $questionNumber);
+                        break;
 
-            case "messages":
-                $data = MessagesHelper::instance( $apiVersion )->buildJsonData( $id );
-                break;
+                    case "messages":
+                        $result = MessagesHelper::instance($apiVersion)->buildJsonData($id);
+                        break;
 
-            case "quizzers":
-                $data = QuizzersHelper::instance( $apiVersion )->buildJsonData( $id );
-                break;
+                    case "quizzers":
+                        $result = QuizzersHelper::instance($apiVersion)->buildJsonData($id);
+                        break;
 
-            case "versions":
-                $data = VersionsHelper::instance( $apiVersion )->buildJsonData( $id );
-                break;
+                    case "versions":
+                        $result = VersionsHelper::instance($apiVersion)->buildJsonData($id);
+                        break;
+                }
+                if( $apiVersion < 4 )
+                {
+                    $data = $result;
+                }
+                else
+                {
+                    $data = array(
+                        "status" => "ok",
+                        "code" => intval( 202 ),
+                        "result" => $result
+                    );
+                }
+            }
+            catch ( Exception $e )
+            {
+                $data = array(
+                    "status" => "error",
+                    "code" => intval( $e->getCode() ),
+                    "message" => $e->getMessage()
+                );
+            }
+        }
+        else
+        {
+            $data = array(
+                "status" => "error",
+                "code" => intval( 503 ),
+                "message" => "Der Server wird gerade gewartet."
+            );
         }
 
 		// set headers for pretty print
