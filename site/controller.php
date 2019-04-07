@@ -86,10 +86,12 @@ class DKQMakerController extends JControllerLegacy
         }
         else
         {
+
+
             $data = array(
                 "status" => "error",
                 "code" => intval( 503 ),
-                "message" => "Der Server wird gerade gewartet."
+                "message" => JText::_("COM_DKQMAKER_ERROR_503")
             );
         }
 

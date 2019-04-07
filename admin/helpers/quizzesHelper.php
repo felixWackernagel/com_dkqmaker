@@ -66,9 +66,12 @@ class QuizzesHelper extends JsonHelper
             "latitude" => floatval($quiz->latitude),
             "longitude" => floatval($quiz->longitude),
             "version" => intval($quiz->version),
-            "published" => intval($quiz->published),
             "lastUpdate" => $quiz->last_update
         );
+
+        if( $this->apiVersion < 4 ) {
+            $json["published"] = intval($quiz->published);
+        }
 
         if( strlen( $quiz->address ) > 0 ) {
             $json["address"] = $quiz->address;

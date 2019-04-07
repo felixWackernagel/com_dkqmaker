@@ -42,6 +42,7 @@ class DKQMakerModelMessage extends JModelAdmin
                 }
                 return $form;
         }
+
         /**
          * Method to get the data that should be injected in the form.
          *
@@ -50,19 +51,23 @@ class DKQMakerModelMessage extends JModelAdmin
          */
         protected function loadFormData()
         {
-                // Check the session for previously entered form data.
-                $data = JFactory::getApplication()->getUserState('com_dkqmaker.edit.message.data', array());
-                if( empty( $data ) )
-                {
-                        $data = $this->getItem();
-                        $data->number = $this->loadNextMessageNumber();
-                }
+            // Check the session for previously entered form data.
+            $data = JFactory::getApplication()->getUserState('com_dkqmaker.edit.message.data', array());
+            if( empty( $data ) )
+            {
+                // no session data so load from database
+                $data = $this->getItem();
+            }
 
-                if( $data->offline_date == '0000-00-00' || $data->offline_date == '0000-00-00 00:00:00') {
-                    $data->offline_date = NULL;
-                }
+            if( $data->number == 0 ) {
+                $data->number = $this->loadNextMessageNumber();
+            }
 
-                return $data;
+            if( $data->offline_date == '0000-00-00' || $data->offline_date == '0000-00-00 00:00:00') {
+                $data->offline_date = NULL;
+            }
+
+            return $data;
         }
 
     private function loadNextMessageNumber()

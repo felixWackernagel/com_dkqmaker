@@ -52,11 +52,15 @@ class DKQMakerModelQuizzer extends JModelAdmin
         {
                 // Check the session for previously entered form data.
                 $data = JFactory::getApplication()->getUserState('com_dkqmaker.edit.quizzer.data', array());
-                if (empty($data))
+                if( empty( $data ) )
                 {
                         $data = $this->getItem();
-                        $data->number = $this->loadNextQuizzerNumber();
                 }
+
+                if( $data->number == 0 ) {
+                    $data->number = $this->loadNextQuizzerNumber();
+                }
+
                 return $data;
         }
 

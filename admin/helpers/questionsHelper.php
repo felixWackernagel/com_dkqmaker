@@ -76,10 +76,13 @@ class QuestionsHelper extends JsonHelper
             "number" => intval($question->number),
             "question" => $question->question,
             "answer" => $question->answer,
-            "published" => intval($question->published),
             "version" => intval($question->version),
             "lastUpdate" => $question->last_update
         );
+
+        if( $this->apiVersion < 4 ) {
+            $json["published"] = intval($question->published);
+        }
 
         if( strlen( $question->image ) > 0 ) {
             $imageUrl = JURI::root() . $question->image;
